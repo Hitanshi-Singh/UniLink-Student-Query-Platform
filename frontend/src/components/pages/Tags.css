@@ -1,0 +1,137 @@
+/* CSS (App.css) */
+.container {
+    text-align: left;
+    margin: 20px;
+  }
+  
+  h1{
+    text-align: left;
+  }
+
+  .topics-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .topic-button {
+    padding: 5px 10px;
+    font-size: 12px;.container {
+        text-align: center;
+        margin: 20px;
+      }
+      
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      
+      .back-button {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+      }
+      
+      .topics-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+      }
+      
+      .topic-button {
+        padding: 5px 10px;
+        font-size: 12px;
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        cursor: pointer;
+        background-color: #fff;
+        transition: all 0.3s;
+        flex-shrink: 0;
+      }
+      
+      .topic-button.selected {
+        background-color: #6200ea;
+        color: #fff;
+        border-color: #6200ea;
+      }
+      
+      .actions {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
+      
+      .skip-button,
+      .next-button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      
+      .skip-button {
+        background-color: #ccc;
+        color: #000;
+      }
+      
+      .next-button {
+        background-color: #28a745;
+        color: #fff;
+      }
+      
+      .next-button:disabled {
+        background-color: #aaa;
+        cursor: not-allowed;
+      }
+      
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    cursor: pointer;
+    background-color: #fff;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+  
+  .topic-button.selected {
+    background-color: #6200ea;
+    color: #fff;
+    border-color: #6200ea;
+  }
+  
+  .actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center; /* Center the buttons horizontally */
+    gap: 10px; /* Add spacing between buttons */
+  }
+  
+  .skip-button,
+  .next-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    margin: 0 10px;
+    cursor: pointer;
+  }
+  
+  .skip-button {
+    background-color: #ccc;
+    color: #000;
+  }
+  
+  .next-button {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+  .next-button:disabled {
+    background-color: #032e19;
+    cursor: not-allowed;
+  }
+  
