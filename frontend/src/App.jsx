@@ -5,6 +5,8 @@ import Login from './components/pages/Login.jsx'
 import Signup from './components/pages/Signup.jsx'
 import Tags from './components/pages/Tags.jsx'
 import Feed from "./components/pages/Feed.jsx";
+import Questions from './components/pages/questions.jsx'
+// import Signup from './components/pages/signup.jsx'
 function App() {
   
 
