@@ -19,6 +19,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/tags" element={<Tags />} />
           <Route path="/feed" element={<Feed />} />
+          <Route path="/questions" element={<Questions />} />
         </Routes>
       </BrowserRouter>
     </>
