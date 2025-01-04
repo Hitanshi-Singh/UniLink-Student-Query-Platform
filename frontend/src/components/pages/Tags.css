@@ -1,136 +1,81 @@
 .container {
-    text-align: left;
-    margin: 20px;
-  }
-  
-  h1{
-    text-align: left;
-  }
+  text-align: center;
+  margin: 20px;
+}
 
-  .topics-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
+h1 {
+  text-align: center;
+}
+
+.topics-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* Five columns */
+  grid-template-rows: repeat(3, 1fr); /* Three rows */
+  grid-gap: 20px;
+  column-gap: 30px;
+}
+
+.topic-button-class {
+  text-align: left; /* Left-align the button text */
+  display: flex; /* Allow for horizontal layout of text and image */
+  justify-content: space-between; /* Align content on opposite ends */
+  align-items: center; /* Vertically center the content */
+  padding: 5px 10px;
+  font-size: 12px;
+  border: 2px solid transparent; /* Set the base border to transparent */
+  border-radius: 3px; /* Ensure rounded corners */
+  cursor: pointer;
+  transition: all 0.3s;
+  background-color: #0d1117;
+  background-clip: padding-box; /* Ensures rounded corners with border-image */
+  border-image: linear-gradient(to right, red, #6200ea) 1; /* Apply gradient border */
+}
+
+.topic-button-class:hover {
+  background-color: #1a1d21; /* Slightly lighter background on hover */
+  border-image: linear-gradient(to right, red, #6200ea) 1; /* Maintain gradient border */
+}
+
+.topic-button-class.selected {
+  background-color: #6200ea; /* Selected button background color */
+  color: #fff; /* Selected button text color */
+  border-color: #6200ea; /* Solid border for selected tags */
+  border-image: none; /* Disable gradient border when selected */
+}
+
+.check {
+  width: 10px;
+  height: 10px;
+  margin-left: 5px; /* Adjust margin as needed */
+}
+
+.topic-button-class.selected {
+  background-color: #6200ea; /* Selected button background color */
+  color: #fff; /* Selected button text color */
+  border-color: #6200ea;
+}
+
+@media (max-width: 768px) {
+  .topic-button-class {
+    flex-wrap: wrap; /* Allow text to wrap if needed on smaller screens */
   }
-  
-  .topic-button {
-    padding: 5px 10px;
-    font-size: 12px;.container {
-        text-align: center;
-        margin: 20px;
-      }
-      
-      .header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-      }
-      
-      .back-button {
-        background: none;
-        border: none;
-        font-size: 20px;
-        cursor: pointer;
-      }
-      
-      .topics-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-      }
-      
-      .topic-button {
-        padding: 5px 10px;
-        font-size: 12px;
-        border: 1px solid #ccc;
-        border-radius: 20px;
-        cursor: pointer;
-        background-color: #fff;
-        transition: all 0.3s;
-        flex-shrink: 0;
-      }
-      
-      .topic-button.selected {
-        background-color: #6200ea;
-        color: #fff;
-        border-color: #6200ea;
-      }
-      
-      .actions {
-        margin-top: 20px;
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-      }
-      
-      .skip-button,
-      .next-button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      
-      .skip-button {
-        background-color: #ccc;
-        color: #000;
-      }
-      
-      .next-button {
-        background-color: #28a745;
-        color: #fff;
-      }
-      
-      .next-button:disabled {
-        background-color: #aaa;
-        cursor: not-allowed;
-      }
-      
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    cursor: pointer;
-    background-color: #fff;
-    transition: all 0.3s;
-    flex-shrink: 0;
-  }
-  
-  .topic-button.selected {
-    background-color: #6200ea;
-    color: #fff;
-    border-color: #6200ea;
-  }
-  
-  .actions {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center; /* Center the buttons horizontally */
-    gap: 10px; /* Add spacing between buttons */
-  }
-  
-  .skip-button,
-  .next-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    margin: 0 10px;
-    cursor: pointer;
-  }
-  
-  .skip-button {
-    background-color: #ccc;
-    color: #000;
-  }
-  
-  .next-button {
-    background-color: #28a745;
-    color: #fff;
-  }
-  
-  .next-button:disabled {
-    background-color: #032e19;
-    cursor: not-allowed;
-  }
-  
+}
+
+.actions {
+  display: flex;
+  padding: 20px;
+  margin: 20px;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.skip-button {
+  background-color: #0d1117;
+  border: 1px solid white;
+}
+.skip-button:hover{
+    background: #0d1117;
+}
+.next-button {
+  color: #0d1117;
+}

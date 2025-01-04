@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./Tags.css"; // Add your styles here
+import plus from '../../assets/whiteplus.png'
+import tick from '../../assets/tick.png'
 
 
 //shd take tags from database
@@ -7,13 +9,22 @@ const topicsList = [
   "System Design",
   "App Development",
   "Binary Search Tree",
-  "Web Development",
   "DSA",
+  "Web Development",
   "DevOps",
   "Artificial Intelligence",
-  "Machine Learning",
   "React",
+  "Machine Learning",
+  "Data Science",
   "Semester Exams",
+  "Cloud Computing",
+  "Full Stack",
+  "Frontend ",
+  "Backend ",
+  "Networking",
+  "Cybersecurity",
+  "Blockchain",
+  "Game Development"
 ];
 
 const App = () => {
@@ -25,7 +36,7 @@ const App = () => {
       setSelectedTopics(selectedTopics.filter((item) => item !== topic));
     } else if (selectedTopics.length < 10) {
       // Select topic
-      setSelectedTopics([...selectedTopics, topic]);
+      setSelectedTopics([...selectedTopics, topic]); 
     }
   };
 
@@ -40,11 +51,17 @@ const App = () => {
       <div className="topics-container">
         {topicsList.map((topic, index) => (
           <button
+            className={`topic-button-class ${isSelected(topic) ? 'selected' : ''}`} 
             key={index}
-            className={`topic-button ${isSelected(topic) ? "selected" : ""}`}
+            id={`topic-button-${isSelected(topic) ? "selected" : ""}`}
             onClick={() => toggleTopic(topic)}
           >
             {topic}
+            <img
+              className="check"
+              src={isSelected(topic) ? tick : plus}
+              alt=""
+            />
           </button>
         ))}
       </div>
