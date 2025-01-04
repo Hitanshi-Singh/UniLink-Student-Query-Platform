@@ -1,5 +1,5 @@
-import React from 'react'
 import logo from '../../assets/logo.png';
+import {Link} from 'react-router-dom'
 
 import "./login.css"
 
@@ -7,7 +7,7 @@ const Login=()=>{
     return (
         <div className="log">
             <img src={logo} alt="" className="logo" />
-            <i class="fa-solid fa-pencil"></i>
+            <i className="fa-solid fa-pencil"></i>
             <h1>WELCOME BACK!</h1>
             <h3>Please enter your details to Sign-in</h3>
          <div className="details-card">
@@ -22,7 +22,7 @@ const Login=()=>{
               </div> </div>
               <div className="click">
                 <button>SIGN-IN</button>
-                <h5>New to Unilink? <a href="signup.jsx">Create an Account</a></h5>
+                <h5>New to Unilink? <Link to="/signup">Create an Account</Link></h5>
                 
               </div>
          </div>

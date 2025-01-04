@@ -1,7 +1,7 @@
-import React, { useState } from "react";
 import "./Tags.css"; // Add your styles here
 import plus from '../../assets/whiteplus.png'
 import tick from '../../assets/tick.png'
+import { useState } from "react";
 
 
 //shd take tags from database

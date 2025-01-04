@@ -1,1 +1,1 @@
-# Unilink - A student Query plaform
+# Unilink - A Student Query Plaform

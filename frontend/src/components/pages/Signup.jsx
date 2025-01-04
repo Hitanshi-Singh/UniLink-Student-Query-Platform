@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
 import './signup.css';
 
 import logo from '../../assets/profilepic.png';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Signup = () => {
   const [profilePic, setProfilePic] = useState(logo);
@@ -51,12 +52,12 @@ const Signup = () => {
           </div>
         </div>
         <div className="click-button">
-          <button>Log in</button>
+          <button>Sign up</button>
           <div className="alternate-sign-in">
             <div className="link">
               <h5>
                 Already have an account?{' '}
-                <a href="www.google.com">Click here</a>
+                <Link to="/login">Click here</Link>
               </h5>
             </div>
           </div>
