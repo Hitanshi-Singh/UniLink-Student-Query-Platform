@@ -51,7 +51,7 @@ const App = () => {
       <div className="topics-container">
         {topicsList.map((topic, index) => (
           <button
-            className={`topic-button-class ${isSelected(topic) ? 'selected' : ''}`} 
+            className={`topic-button-class gradient-border ${isSelected(topic) ? 'selected' : ''}`} 
             key={index}
             id={`topic-button-${isSelected(topic) ? "selected" : ""}`}
             onClick={() => toggleTopic(topic)}
@@ -67,9 +67,7 @@ const App = () => {
       </div>
       <div className="actions">
         <button className="skip-button">Skip</button>
-        <button className="next-button" disabled={selectedTopics.length === 0}>
-          Next
-        </button>
+        <button className="next-button" disabled={selectedTopics.length === 0}>Next</button>
       </div>
     </div>
   );

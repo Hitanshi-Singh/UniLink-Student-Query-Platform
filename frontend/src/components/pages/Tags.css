@@ -20,9 +20,9 @@ h1 {
   display: flex; /* Allow for horizontal layout of text and image */
   justify-content: space-between; /* Align content on opposite ends */
   align-items: center; /* Vertically center the content */
-  padding: 5px 10px;
+  padding: 12px 10px;
   font-size: 12px;
-  border: 2px solid transparent; /* Set the base border to transparent */
+  border: 1.5px solid transparent; /* Set the base border to transparent */
   border-radius: 3px; /* Ensure rounded corners */
   cursor: pointer;
   transition: all 0.3s;
@@ -65,11 +65,13 @@ h1 {
   display: flex;
   padding: 20px;
   margin: 20px;
-  justify-content: space-between;
+  justify-content:center;
   gap: 30px;
 }
 
 .skip-button {
+    width: 20%;
+    align-items: center;
   background-color: #0d1117;
   border: 1px solid white;
 }
@@ -77,5 +79,12 @@ h1 {
     background: #0d1117;
 }
 .next-button {
+    width: 20%;
+    align-items: center;
   color: #0d1117;
 }
+
+.next-button:disabled {
+    background-color: #063403; /* Gray out the button when disabled */
+    cursor: not-allowed; /* Change cursor to indicate disabled state */
+  }
