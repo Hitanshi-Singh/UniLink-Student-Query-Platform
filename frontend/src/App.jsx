@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Login from './components/pages/login.jsx'
 import Tags from './components/pages/Tags.jsx'
+import Questions from './components/pages/questions.jsx'
 import Signup from './components/pages/signup.jsx'
 function App() {
   
@@ -11,7 +12,7 @@ function App() {
   return (
     <>
       
-      <Tags/>
+      <Questions/>
     </>
   )
 }
