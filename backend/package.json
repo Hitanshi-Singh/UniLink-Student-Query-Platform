@@ -33,8 +33,10 @@
     "content-disposition": "^0.5.4",
     "content-type": "^1.0.5",
     "cookie": "^0.7.1",
+    "cookie-parser": "^1.4.7",
     "cookie-signature": "^1.0.6",
     "core-util-is": "^1.0.3",
+    "cors": "^2.8.5",
     "debug": "^2.6.9",
     "delegates": "^1.0.0",
     "depd": "^2.0.0",
@@ -173,7 +175,7 @@
     "prettier": "^3.4.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
   },
   "author": "",
   "license": "ISC",

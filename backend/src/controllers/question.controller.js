@@ -97,4 +97,4 @@ export const getUserQuestionHistory = async (req, res) => {
     res.status(500).json(new ApiError(500, "Error has occured" ));
   }
 };
-export {addQuestion, getAllQuestions, updateQuestion, deleteQuestion, getUserQuestionHistory}
+export {addQuestion, updateQuestion, deleteQuestion}
