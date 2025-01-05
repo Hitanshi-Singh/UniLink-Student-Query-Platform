@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js"
 import { User} from "../models/user.model.js"
 import {Question} from "../models/user.model.js"
+import { Answer } from "../models/answers.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
@@ -19,6 +20,16 @@ const addAnswer = asyncHandler(async (req, res) => {
       throw new ApiError(404, "Question not found");
     }
   
+    let imageUrls = [];
+    if (req.files?.images) {
+      const uploadPromises = req.files.images.map(async (file) => {
+        const uploadedImage = await uploadOnCloudinary(file.path);
+        return uploadedImage?.url;
+      });
+  
+      imageUrls = await Promise.all(uploadPromises);
+    }
+
     // Create the answer
     const answer = await Answer.create({
       content,
@@ -66,7 +77,16 @@ const addAnswer = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, answers, "All answers fetched successfully"));
   });
   
+  const getCurrentAnswer = asyncHandler(async(req, res) => {
+    return res
+    .status(200)
+    .json(new ApiResponse(
+        200,
+        req.Answer,
+        "Answer fetched successfully"
+    ))
+})
   
 export {
-  addAnswer, deleteAnswer, getAllAnswers
+  addAnswer, deleteAnswer, getAllAnswers, getCurrentAnswer
 }
