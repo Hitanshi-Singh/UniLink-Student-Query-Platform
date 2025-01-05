@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable react/prop-types */
 import { BiTime } from 'react-icons/bi'; // Importing a clock icon
 import './questions.css';
 
