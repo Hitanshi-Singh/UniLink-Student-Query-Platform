@@ -12,6 +12,12 @@ const questionSchema = new Schema({
     images: [{
         type: String, // cloudinary url
     }],
+    relatedTags: [
+        {
+            type: String,
+            required: [true, 'Related tags must be specified']
+        }
+    ],
     answers: [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
 }, {timestamps: true})
 

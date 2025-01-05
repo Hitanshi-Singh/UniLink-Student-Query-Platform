@@ -39,19 +39,6 @@ const userSchema = new Schema(
             required: [true, 'Password is required'],
             minLength: 6
         },
-        stream: {
-            type: String,
-            required: true,
-            enum: [
-                'Computer Science',
-                'Electrical, Electronics & Communication',
-                'Mechanical Engineering',
-                'Civil Engineering, Construction & Technology Management',
-                'Biotechnology',
-                'Environmental Engineering',
-                'Business Studies'
-              ],
-        },
         refreshToken: {
             type: String
         },

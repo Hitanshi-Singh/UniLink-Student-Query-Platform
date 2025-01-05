@@ -1,14 +1,15 @@
+import mongoose from "mongoose"
 const tagsSchema = new mongoose.Schema({
-    stream: { 
-      type: String, // Just store the stream name as a string
-      required: true 
+    description: { 
+      type: String,
     },
-    tags: {
-      type: [String], // Array of tags for the stream
-      required: true
+    name: {
+      type: String,
+      required: true,
+      unique: true
     }
   });
-  
+/*  
   // For Computer Science
 const csTags = new Tag({
   stream: 'Computer Science',
@@ -73,4 +74,4 @@ const busTags = new Tag({
 await busTags.save();
 
 const Tag = mongoose.model('Tag', tagsSchema);
-  
+  */
