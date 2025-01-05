@@ -25,17 +25,12 @@ const userSchema = new Schema(
             trim: true, 
             index: true
         },
-        avatar: {
-            type: String, // cloudinary url
-            required: true,
-        },
         profileImage: {
             type: String, // cloudinary url
         },
-        tags: [
+        subscribedTags: [
             {
-                type: Schema.Types.ObjectId,
-                ref: "Tags",
+                type: String,
                 required: [true, 'Tags are required to optimize your feed']
             }
         ],
@@ -44,21 +39,16 @@ const userSchema = new Schema(
             required: [true, 'Password is required'],
             minLength: 6
         },
-        stream: {
-            type: String,
-            required: true,
-            enum: [
-                'Computer Science',
-                'Electrical, Electronics & Communication',
-                'Mechanical Engineering',
-                'Civil Engineering, Construction & Technology Management',
-                'Biotechnology',
-                'Environmental Engineering',
-                'Business'
-              ],
-        },
         refreshToken: {
             type: String
+        },
+        questions: {
+            type: Schema.Types.ObjectId,
+            ref: "question"
+        },
+        upvotes: {
+            type: Schema.Types.ObjectId,
+            ref: "upvotes"
         }
 
     },
