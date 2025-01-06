@@ -318,9 +318,6 @@ module.exports = {
     changeCurrentPassword,
     getCurrentUser,
     updateUserAvatar,
-    updateUserCoverImage,
-    getUserChannelProfile,
-    getWatchHistory,
     updateAccountDetails
   };
   
