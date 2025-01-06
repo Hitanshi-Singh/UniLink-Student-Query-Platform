@@ -1,9 +1,9 @@
-import { asyncHandler } from "../utils/asyncHandler.js";
-import {ApiError} from "../utils/ApiError.js"
-import { User} from "../models/user.model.js"
-import {Question} from "../models/user.model.js"
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
+const { asyncHandler } = require("../utils/asyncHandler.js");
+const  ApiError  = require("../utils/API_Error.js");
+const { User } = require("../models/user.model.js");
+const { Question } = require("../models/user.model.js");
+const uploadOnCloudinary = require("../utils/cloudinary.js");
+const  ApiResponse  = require("../utils/API_Response.js");
 
 const addAnswer = asyncHandler(async (req, res) => {
     const { content, questionId, owner } = req.body;
