@@ -7,9 +7,6 @@ const {
     changeCurrentPassword, 
     getCurrentUser, 
     updateUserAvatar, 
-    updateUserCoverImage, 
-    getUserChannelProfile, 
-    getWatchHistory, 
     updateAccountDetails 
 } = require("../controllers/user.controller.js");
 const { upload } = require("../middlewares/multer.middleware.js");
