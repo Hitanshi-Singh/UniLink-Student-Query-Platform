@@ -46,7 +46,7 @@ const addQuestion = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, { question }, "Question created successfully"));
 });
 
-const getAllQuestions = asyncHandler(async (req, res) => {
+const getAllQuestions = asyncHandler(async (_, res) => {
   const questions = await Question.find()
     .populate("owner", "username")
     .select("content owner createdAt");
