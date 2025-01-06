@@ -4,7 +4,7 @@ const express=require('express');
 const cors=require('cors')
 // import cookieParser from "cookie-parser"
 const cookieParser=require('cookie-parser')
-// import userRouter from "./routes/user.routes"
+const userRouter=require('./routes/user.routes')
 // import questionRouter from "./routes/question.route"
 // import answerRouter from "./routes/answer.route"
 
@@ -22,7 +22,7 @@ app.use(express.urlencoded({extended: true, limit: "16kb"}))
 app.use(express.static("public"))
 app.use(cookieParser())
 
-// app.use("/api/users",userRouter)
+app.use("/api/users",userRouter)
 // app.use("/api/questions",questionRouter)
 // app.use("/api/answers",answerRouter)
 
