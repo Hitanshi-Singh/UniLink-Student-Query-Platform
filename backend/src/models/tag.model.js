@@ -1,14 +1,14 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 const tagsSchema = new mongoose.Schema({
-    description: { 
-      type: String,
-    },
-    name: {
-      type: String,
-      required: true,
-      unique: true
-    }
-  });
+  description: {
+    type: String,
+  },
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+});
 /*  
   // For Computer Science
 const csTags = new Tag({

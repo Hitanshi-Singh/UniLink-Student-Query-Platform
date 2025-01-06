@@ -1,25 +1,29 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const questionSchema = new Schema({
+const questionSchema = new Schema(
+  {
     content: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     owner: {
-        type: Schema.Types.ObjectId,
-        ref: "User"
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
-    images: [{
+    images: [
+      {
         type: String, // cloudinary url
-    }],
-    relatedTags: [
-        {
-            type: String,
-            required: [true, 'Related tags must be specified']
-        }
+      },
     ],
-    answers: [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
-}, {timestamps: true})
+    relatedTags: [
+      {
+        type: String,
+        required: [true, "Related tags must be specified"],
+      },
+    ],
+    answers: [{ type: Schema.Types.ObjectId, ref: "Answer" }],
+  },
+  { timestamps: true },
+);
 
-
-export const Question = mongoose.model("Question", questionSchema)
+export const Question = mongoose.model("Question", questionSchema);

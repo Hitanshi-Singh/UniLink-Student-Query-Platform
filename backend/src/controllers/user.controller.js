@@ -311,13 +311,12 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
-    registerUser,
-    loginUser,
-    logoutUser,
-    refreshAccessToken,
-    changeCurrentPassword,
-    getCurrentUser,
-    updateUserAvatar,
-    updateAccountDetails
-  };
-  
+  registerUser,
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  changeCurrentPassword,
+  getCurrentUser,
+  updateUserAvatar,
+  updateAccountDetails,
+};
