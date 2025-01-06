@@ -34,12 +34,12 @@ const registerUser = asyncHandler(async (req, res) => {
   // check for user creation
   // return res
 
-  const { fullName, email, username, password, stream, selectedTags } =
+  const { fullName, email, username, password, selectedTags } =
     req.body;
 
   // Validate fields
   if (
-    [fullName, email, username, password, stream].some(
+    [fullName, email, username, password].some(
       (field) => field?.trim() === "",
     )
   ) {
@@ -58,15 +58,16 @@ const registerUser = asyncHandler(async (req, res) => {
   // Process profile image
   const profileLocalPath = req.files?.profile[0]?.path;
 
-  if (!profileLocalPath) {
-    throw new ApiError(400, "Avatar file is required");
-  }
+  // if (!profileLocalPath) {
+  //   throw new ApiError(400, "Avatar file is required");
+  // }
+  let profileImage=null;
+  if(profileLocalPath)
+     profileImage = await uploadOnCloudinary(profileLocalPath);
 
-  const profileImage = await uploadOnCloudinary(profileLocalPath);
-
-  if (!profileImage) {
-    throw new ApiError(400, "Profile picture upload failed");
-  }
+  // if (!profileImage) {
+  //   throw new ApiError(400, "Profile picture upload failed");
+  // }
 
   // Create user
   const user = await User.create({
@@ -75,7 +76,6 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     password,
     username: username.toLowerCase(),
-    stream, // Store selected stream
     subscribedTags: selectedTags, // Store the tags selected by the user (from the frontend)
   });
 
@@ -113,7 +113,7 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password,email } = req.body;
   if (!username) {
     throw new ApiError(400, "username is required");
   }
