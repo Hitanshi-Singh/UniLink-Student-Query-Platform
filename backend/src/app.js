@@ -1,16 +1,12 @@
-// import express from "express"
 const express=require('express');
-// import cors from "cors"
 const cors=require('cors')
-// import cookieParser from "cookie-parser"
 const cookieParser=require('cookie-parser')
 const userRouter=require('./routes/user.routes')
-// import questionRouter from "./routes/question.route"
-// import answerRouter from "./routes/answer.route"
+const questionRouter=require('./routes/question.route')
+const answerRouter=require('./routes/answer.route')
 
-// dotenv.config();
 
-const app = express()
+const app = express();
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
@@ -23,7 +19,7 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 app.use("/api/users",userRouter)
-// app.use("/api/questions",questionRouter)
-// app.use("/api/answers",answerRouter)
+app.use("/api/questions",questionRouter)
+app.use("/api/answers",answerRouter)
 
-module.exports= app
+module.exports= app;

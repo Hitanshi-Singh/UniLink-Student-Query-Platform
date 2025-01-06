@@ -3,10 +3,12 @@ const {
     addQuestion, 
     updateQuestion, 
     deleteQuestion, 
-    getAllQuestions, 
-    getQuestionsRelatedToUserSubscribedTags 
+    getAllQuestions,
+    getUserQuestionHistory, 
+    // getQuestionsRelatedToUserSubscribedTags 
 } = require("../controllers/question.controller.js");
 const { upload } = require("../middlewares/multer.middleware.js");
+const { verifyJWT } = require("../middlewares/auth.middleware.js");
 
 const router = express.Router();
 
@@ -22,7 +24,7 @@ router.route('/addQuestion').post(verifyJWT,
 
 router.route('/questions/delete/:id'). delete(verifyJWT, deleteQuestion); 
 
-router.route('/user/subscribed-tags').get(verifyJWT, getQuestionsRelatedToUserSubscribedTags);
+// router.route('/user/subscribed-tags').get(verifyJWT, getQuestionsRelatedToUserSubscribedTags);
 
 router.route('/user/history').get(verifyJWT, getUserQuestionHistory);
 

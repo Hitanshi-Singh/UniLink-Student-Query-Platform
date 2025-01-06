@@ -1,4 +1,4 @@
-const { asyncHandler } = require("../utils/asyncHandler.js");
+const asyncHandler  = require("../utils/asynchandler.utils.js");
 const  ApiError  = require("../utils/API_Error.js");
 const { User } = require("../models/user.model.js");
 const { Question } = require("../models/user.model.js");
@@ -67,6 +67,6 @@ const addAnswer = asyncHandler(async (req, res) => {
   });
   
   
-export {
+module.exports= {
   addAnswer, deleteAnswer, getAllAnswers
 }
