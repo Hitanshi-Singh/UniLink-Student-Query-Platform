@@ -1,4 +1,5 @@
-import mongoose, { Schema } from "mongoose";
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const answerSchema = new Schema(
   {
@@ -10,7 +11,7 @@ const answerSchema = new Schema(
       type: String,
       required: true,
     },
-    upvote: {
+    upvotes: {
       type: Number,
       default: 0,
     },
@@ -63,4 +64,4 @@ answerSchema.post("save", async function (doc) {
   }
 });
 
-export const Answer = mongoose.model("Answer", likeSchema);
+module.exports = mongoose.model("Answer", answerSchema);

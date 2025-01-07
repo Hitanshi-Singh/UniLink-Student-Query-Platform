@@ -1,6 +1,6 @@
 const asyncHandler = require("../utils/asynchandler.utils.js");
 const ApiError = require("../utils/API_Error.js");
-const { Answer } = require("../models/answers.model.js");
+const  Answer  = require("../models/answers.model.js");
 const  Question  = require("../models/question.model.js");
 const uploadOnCloudinary = require("../utils/cloudinary.js");
 const ApiResponse = require("../utils/API_Response.js");

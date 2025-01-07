@@ -24,6 +24,8 @@ router.route('/addQuestion').post(verifyJWT,
 router.route('/questions/delete/:id'). delete(verifyJWT, deleteQuestion); 
 
 router.route('/questions/user-subscribed-tags').get(verifyJWT, getQuestionsRelatedToUserSubscribedTags);
+router.route('/updateQuestion/:id').patch(verifyJWT,updateQuestion);
+
 
 router.route('/user/history').get(verifyJWT, getUserQuestionHistory);
 
