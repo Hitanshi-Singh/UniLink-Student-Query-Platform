@@ -51,6 +51,10 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "upvotes",
     },
+    dept: {
+      type: Schema.Types.ObjectId,
+      ref: "Dept",
+    }
   },
   {
     timestamps: true,
