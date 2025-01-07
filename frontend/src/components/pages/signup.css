@@ -29,8 +29,8 @@
   .h3 {
     font-size: 1rem;
     font-weight: 300;
-    margin-top: 10px;
-    margin-bottom: 30px;
+    margin-top: 8px;
+    margin-bottom: 20px;
     color: #2986cc;
     text-align: center;
   }
@@ -39,7 +39,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
   
   .profile img {
@@ -49,9 +49,9 @@
     object-fit: cover;
   }
   
-  .username
+  .inputdiv
   {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
   }
   
   .link {
@@ -63,7 +63,7 @@
   }
 
   
-  input {
+  .input {
     width: 100%;
     padding: 10px;
     border-radius: 8px;
@@ -74,7 +74,7 @@
     font-size: 0.9rem;
   }
   
-  input::placeholder {
+  .input::placeholder {
     color: #666666;
   }
   

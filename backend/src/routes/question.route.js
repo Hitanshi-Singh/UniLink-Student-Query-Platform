@@ -1,7 +1,15 @@
-import { Router } from express
-import {addQuestion, updateQuestion, deleteQuestion, getAllQuestions, getQuestionsRelatedToUserSubscribedTags}
-from "../controllers/question.controller.js"
-import {upload} from "../middlewares/multer.middleware.js"
+const { Router } = require("express");
+const { 
+    addQuestion, 
+    updateQuestion, 
+    deleteQuestion, 
+    getAllQuestions, 
+    getQuestionsRelatedToUserSubscribedTags, 
+    getUserQuestionHistory
+} = require("../controllers/question.controller.js");
+const { upload } = require("../middlewares/multer.middleware.js");
+const { verifyJWT } = require("../middlewares/auth.middleware.js");
+
 
 const router= Router();
 
@@ -19,4 +27,4 @@ router.route('/questions/user-subscribed-tags').get(verifyJWT, getQuestionsRelat
 
 router.route('/user/history').get(verifyJWT, getUserQuestionHistory);
 
-export default router;
+module.exports= router;

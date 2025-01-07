@@ -1,10 +1,16 @@
-import { Router } from "express";
-import { 
-    registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails,
+const express = require("express");
+const { 
+    registerUser, 
+    loginUser, 
+    logoutUser, 
+    refreshAccessToken, 
+    changeCurrentPassword, 
+    getCurrentUser, 
+    updateAccountDetails,
     updateUserDP
-} from "../controllers/user.controller.js";
-import {upload} from "../middlewares/multer.middleware.js"
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+} = require("../controllers/user.controller.js");
+const { upload } = require("../middlewares/multer.middleware.js");
+const { verifyJWT } = require("../middlewares/auth.middleware.js");
 
 
 // Add your routes here using `router`
