@@ -1,16 +1,16 @@
 const asyncHandler = require("../utils/asynchandler.utils.js");
 const ApiError = require("../utils/API_Error.js");
-const { User } = require("../models/user.model.js");
+const { Answer } = require("../models/answers.model.js");
 const { Question } = require("../models/user.model.js");
 const uploadOnCloudinary = require("../utils/cloudinary.js");
 const ApiResponse = require("../utils/API_Response.js");
 
 const addAnswer = asyncHandler(async (req, res) => {
-  const { content, questionId, owner } = req.body;
+  const { content, questionId } = req.body;
 
   // Validate required fields
-  if ([content, questionId, owner].some((field) => field?.trim() === "")) {
-    throw new ApiError(400, "Answer content, question ID, or owner is missing");
+  if ([content, questionId].some((field) => field?.trim() === "")) {
+    throw new ApiError(400, "Answer content or question ID is missing");
   }
 
   // Check if the question exists
@@ -19,6 +19,9 @@ const addAnswer = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Question not found");
   }
 
+  // Get the owner from the authenticated user
+  const owner = req.user._id;
+
   // Create the answer
   const answer = await Answer.create({
     content,
@@ -26,22 +29,19 @@ const addAnswer = asyncHandler(async (req, res) => {
     owner,
   });
 
-  if (!answer) {
-    throw new ApiError(500, "Failed to create answer");
-  }
-
-  // Link the answer to the question
+  // Add the answer ID to the question's answers array
   question.answers.push(answer._id);
   await question.save();
 
-  // Return the newly created answer
-  return res
+  res
     .status(201)
-    .json(new ApiResponse(200, answer, "Answer created successfully"));
+    .json(new ApiResponse(201, answer, "Answer added successfully"));
 });
 
+
 const deleteAnswer = asyncHandler(async (req, res) => {
-  const answer = await Answer.findById(req.params.id);
+  const { questionId, id: answerId } = req.params;
+  const answer = await Answer.findById(answerId);
 
   if (!answer) {
     throw new ApiError(404, "Answer not found");
@@ -61,8 +61,9 @@ const deleteAnswer = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, null, "Answer deleted successfully"));
 });
 
-const getAllAnswers = asyncHandler(async (req, res) => {
-  const answers = await Question.find()
+const getQuestionAnswers = asyncHandler(async (req, res) => {
+  const id=req.params.id
+  const answers = await Answer.find({question_id:id})
     .populate("owner", "username")
     .select("content owner createdAt");
   res
@@ -108,6 +109,6 @@ const getCurrentAnswer = asyncHandler(async (req, res) => {
 module.exports = {
   addAnswer,
   deleteAnswer,
-  getAllAnswers,
+  getQuestionAnswers,
   getCurrentAnswer
 };
