@@ -1,13 +1,32 @@
 import logo from "../../assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import "./login.css";
-import axios from "axios";
 import { useState } from "react";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const navigate=useNavigate();
+
+  const handleSubmit = async () => {
+    try {
+      const payload = { username, password ,email};
+      const response = await fetch("http://localhost:3000/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      window.localStorage.setItem("token",data.data.accessToken)
+      navigate('/feed');
+    } catch(err) {
+      console.log(err);
+    }
+  };
   return (
     <div className="log">
       <img src={logo} alt="" className="logo" />
@@ -28,6 +47,18 @@ const Login = () => {
               }}
             />
           </div>
+          <div className="Username">
+            <h5 className="h5">Email</h5>
+            <input
+              type="text"
+              placeholder="Enter your name"
+              value={email}
+              className="input"
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+            />
+          </div>
           <div className="password">
             <h5 className="h5">Password</h5>
             <input
@@ -39,16 +70,12 @@ const Login = () => {
                 setPassword(e.target.value);
               }}
             />
-          </div>{" "}
+          </div>
         </div>
         <div className="click">
-          <button className="button" onClick={async()=>{
-            const response = await axios.post("http://localhost:3000/api/users/login",{
-              username,
-              password
-            })
-            console.log(response?.data.message)
-          }}>SIGN-IN</button>
+          <button className="button" onClick={handleSubmit}>
+            SIGN-IN
+          </button>
           <h5 className="h5">
             New to Unilink? <Link to="/signup">Create an Account</Link>
           </h5>
