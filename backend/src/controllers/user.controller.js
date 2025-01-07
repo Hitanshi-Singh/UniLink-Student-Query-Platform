@@ -1,8 +1,8 @@
 const  asyncHandler  = require("../utils/asynchandler.utils.js");
-const { ApiError } = require("../utils/API_Error.js");
+const  ApiError  = require("../utils/API_Error.js");
 const { User } = require("../models/user.model.js");
 const { uploadOnCloudinary } = require("../utils/cloudinary.js");
-const { ApiResponse } = require("../utils/API_Response.js");
+const ApiResponse  = require("../utils/API_Response.js");
 const jwt = require("jsonwebtoken");
 
 
@@ -52,22 +52,24 @@ const registerUser = asyncHandler( async (req, res) => {
     }
     
     // Process profile image
-    const profileLocalPath = req.files?.profile[0]?.path;
+    // const profileLocalPath = req?.files?.profile[0]?.path;
     
-    if (!profileLocalPath) {
-        throw new ApiError(400, "Avatar file is required");
-    }
+    // if (!profileLocalPath) {
+    //     throw new ApiError(400, "Avatar file is required");
+        
+    // }
     
-    const profileImage = await uploadOnCloudinary(profileLocalPath);
+    // const profileImage = await uploadOnCloudinary(profileLocalPath);
     
-    /*if (!profileImage) {
-        throw new ApiError(400, "Profile picture upload failed");
-    }*/
+    // if (!profileImage) {
+    //     throw new ApiError(400, "Profile picture upload failed");
+    // }
     
     // Create user
     const user = await User.create({
         fullName,
-        profileImage: profileImage?.url,
+        // profileImage: profileImage?.url,
+        profileImage:"",
         email, 
         password,
         username: username.toLowerCase(),
@@ -106,7 +108,7 @@ const registerUser = asyncHandler( async (req, res) => {
     
 
 const loginUser = asyncHandler( async(req,res)=>{
-    const {username, password}  = req.body
+    const {username, password,email}  = req.body
     if(!username){
         throw new ApiError(400, "username is required")
     }   

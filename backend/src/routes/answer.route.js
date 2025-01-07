@@ -19,6 +19,4 @@ router
 
 router.route("/:questionId/answer/delete/:id").delete(verifyJWT, deleteAnswer);
 router.route('/answer/:answerId').get(verifyJWT, getCurrentAnswer);
-
-// router.route()
 module.exports = router;

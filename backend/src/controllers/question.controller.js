@@ -1,16 +1,22 @@
 const asyncHandler = require("../utils/asynchandler.utils.js");
 const ApiError = require("../utils/API_Error.js");
 const { User } = require("../models/user.model.js");
-const { Question } = require("../models/user.model.js");
+const Question  = require("../models/question.model.js");
 const uploadOnCloudinary = require("../utils/cloudinary.js");
 const ApiResponse = require("../utils/API_Response.js");
 
 const addQuestion = asyncHandler(async (req, res) => {
-  const { content, owner, relatedTags } = req.body;
+  const { content, relatedTags } = req.body;
+  const owner=req.user?._id;
+  console.log("req.body:", req.body);
+console.log("req.user:", req.user);
+
+  console.log(owner)
   if (
-    [content, owner].some((field) => field?.trim() === "") ||
-    !Array.isArray(relatedTags) ||
-    relatedTags.length === 0
+    !content?.trim() || // Check if content is a non-empty string
+    !owner ||   // Check if owner exists
+    !Array.isArray(relatedTags) || // Ensure relatedTags is an array
+    relatedTags.length === 0       // Ensure the array is not empty
   ) {
     throw new ApiError(
       400,
@@ -109,7 +115,7 @@ const getUserQuestionHistory = async (req, res) => {
         new ApiResponse(
           200,
           questions,
-          "User's questions fetched duccessfully",
+          "User's questions fetched successfully",
         ),
       );
   } catch (error) {
