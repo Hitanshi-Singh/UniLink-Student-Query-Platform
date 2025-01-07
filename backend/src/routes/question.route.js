@@ -5,7 +5,7 @@ const {
     deleteQuestion, 
     getAllQuestions, 
     getQuestionsRelatedToUserSubscribedTags, 
-    getUserQuestionHistory
+    getUserQuestionHistory,
 } = require("../controllers/question.controller.js");
 const { upload } = require("../middlewares/multer.middleware.js");
 const { verifyJWT } = require("../middlewares/auth.middleware.js");

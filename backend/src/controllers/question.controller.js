@@ -38,7 +38,8 @@ console.log("req.user:", req.user);
   // Create the question
   const question = await Question.create({
     content,
-    owner,
+    owner: req.user._id,
+    relatedTags,
     images: imageUrls,
   });
 
@@ -52,7 +53,7 @@ console.log("req.user:", req.user);
     .json(new ApiResponse(200, { question }, "Question created successfully"));
 });
 
-const getAllQuestions = asyncHandler(async (_, res) => {
+const getAllQuestions = asyncHandler(async (req, res) => {
   const questions = await Question.find()
     .populate("owner", "username")
     .select("content owner createdAt");
@@ -128,6 +129,11 @@ const getQuestionsRelatedToUserSubscribedTags = asyncHandler(async (req, res) =>
     const user = await User.findById(req.user._id);
     if (!user) throw new ApiError(404, 'User not found');
 
+    // If no subscribed tags, return an empty list or handle it gracefully
+    if (!user.subscribedTags || user.subscribedTags.length === 0) {
+      return res.status(200).json(new ApiResponse(200, [], "User has no subscribed tags"));
+    }
+
     // Fetch only questions related to user's tags
     const questions = await Question.find({ 
       relatedTags: { $in: user.subscribedTags } 
@@ -143,9 +149,14 @@ const getQuestionsRelatedToUserSubscribedTags = asyncHandler(async (req, res) =>
         path: 'owner', // Populate question owner details
         select: 'username profileImage'
       });
-
-    res.status(200).json(new ApiResponse(200, questions, "User's interested questions fetched successfully"));
+      const enhancedQuestions = questions.map((question) => ({
+        ...question.toObject(),
+        totalAnswers: question.answers.length,
+      }));
+        
+    res.status(200).json(new ApiResponse(200, enhancedQuestions, "User's interested questions fetched successfully"));
   } catch (error) {
+    console.error(error);  // Log error for debugging
     res.status(500).json(new ApiError(500, "Error has occurred"));
   }
 });
@@ -156,5 +167,5 @@ module.exports = {
   deleteQuestion,
   getAllQuestions,
   getUserQuestionHistory,
-  getQuestionsRelatedToUserSubscribedTags
+  getQuestionsRelatedToUserSubscribedTags,
 };
