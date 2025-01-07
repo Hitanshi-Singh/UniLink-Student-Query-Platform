@@ -7,7 +7,7 @@ const ApiResponse = require("../utils/API_Response.js");
 
 const addAnswer = asyncHandler(async (req, res) => {
   const { content, questionId } = req.body;
-
+  console.log(content,questionId)
   // Validate required fields
   if ([content, questionId].some((field) => field?.trim() === "")) {
     throw new ApiError(400, "Answer content or question ID is missing");
@@ -24,9 +24,9 @@ const addAnswer = asyncHandler(async (req, res) => {
 
   // Create the answer
   const answer = await Answer.create({
-    content,
+    answer_content:content,
     question: questionId,
-    owner,
+    answeredBy:owner,
   });
 
   // Add the answer ID to the question's answers array
