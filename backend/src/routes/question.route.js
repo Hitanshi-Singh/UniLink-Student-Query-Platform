@@ -21,9 +21,9 @@ router.route('/addQuestion').post(verifyJWT,
     upload.fields([{ name: 'images', maxCount: 5}]),
     updateQuestion);
 
-router.route('/questions/delete/:id'). delete(verifyJWT, deleteQuestion); 
+router.route('/delete/:id'). delete(verifyJWT, deleteQuestion); 
 
-router.route('/questions/user-subscribed-tags').get(verifyJWT, getQuestionsRelatedToUserSubscribedTags);
+router.route('/user-subscribed-tags').get(verifyJWT, getQuestionsRelatedToUserSubscribedTags);
 router.route('/updateQuestion/:id').patch(verifyJWT,updateQuestion);
 
 
