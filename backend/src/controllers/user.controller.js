@@ -4,6 +4,7 @@ import { User} from "../models/user.model.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
+import { Dept } from "../models/dept.model.js";
 
 const generateAccessAndRefereshTokens = async(userId) =>{
     try {
@@ -34,10 +35,10 @@ const registerUser = asyncHandler( async (req, res) => {
     // return res
 
 
-    const { fullName, email, username, password, stream, selectedTags } = req.body;
+    const { fullName, email, username, password, dept, selectedTags } = req.body;
 
     // Validate fields
-    if ([fullName, email, username, password, stream].some((field) => field?.trim() === "")) {
+    if ([fullName, email, username, password].some((field) => field?.trim() === "")) {
         throw new ApiError(400, "All fields are required");
     }
     
@@ -59,9 +60,9 @@ const registerUser = asyncHandler( async (req, res) => {
     
     const profileImage = await uploadOnCloudinary(profileLocalPath);
     
-    if (!profileImage) {
+    /*if (!profileImage) {
         throw new ApiError(400, "Profile picture upload failed");
-    }
+    }*/
     
     // Create user
     const user = await User.create({
@@ -70,7 +71,7 @@ const registerUser = asyncHandler( async (req, res) => {
         email, 
         password,
         username: username.toLowerCase(),
-        stream,  // Store selected stream
+        dept,  // Store selected stream
         subscribedTags: selectedTags  // Store the tags selected by the user (from the frontend)
     });
     
