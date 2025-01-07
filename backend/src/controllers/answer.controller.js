@@ -1,7 +1,7 @@
 const asyncHandler = require("../utils/asynchandler.utils.js");
 const ApiError = require("../utils/API_Error.js");
-const { User } = require("../models/user.model.js");
-const { Question } = require("../models/question.model.js");
+const { Answer } = require("../models/answers.model.js");
+const  Question  = require("../models/question.model.js");
 const uploadOnCloudinary = require("../utils/cloudinary.js");
 const ApiResponse = require("../utils/API_Response.js");
 
@@ -26,7 +26,7 @@ const addAnswer = asyncHandler(async (req, res) => {
   const answer = await Answer.create({
     content,
     question: questionId,
-    answeredBy :owner,
+    owner,
   });
 
   // Add the answer ID to the question's answers array
