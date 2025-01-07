@@ -88,6 +88,10 @@ const getCurrentAnswer = asyncHandler(async (req, res) => {
       .populate({
         path: 'question', 
         select: 'content owner relatedTags'
+      })
+      .populate({
+        path: 'replies', 
+        select: 'content'
       });
 
     if (!answer) {

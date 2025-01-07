@@ -23,10 +23,10 @@ const answerSchema = new Schema(
         type: String, // cloudinary url
       },
     ],
-    replies: {
+    replies: [{
       type: Schema.Types.ObjectId,
       ref: "Reply"
-    }
+    }]
   },
   { timestamps: true },
 );
