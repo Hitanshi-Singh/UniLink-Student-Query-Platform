@@ -116,10 +116,39 @@ const getUserQuestionHistory = async (req, res) => {
     res.status(500).json(new ApiError(500, "Error has occured"));
   }
 };
+const getQuestionsRelatedToUserSubscribedTags = asyncHandler(async (req, res) => {
+  try {
+    // Get the current logged-in user from the token
+    const user = await User.findById(req.user._id);
+    if (!user) throw new ApiError(404, 'User not found');
+
+    // Fetch only questions related to user's tags
+    const questions = await Question.find({ 
+      relatedTags: { $in: user.subscribedTags } 
+    })
+      .populate({
+        path: 'answers',
+        populate: {
+          path: 'answeredBy',
+          select: 'username'
+        }
+      })
+      .populate({
+        path: 'owner', // Populate question owner details
+        select: 'username profileImage'
+      });
+
+    res.status(200).json(new ApiResponse(200, questions, "User's interested questions fetched successfully"));
+  } catch (error) {
+    res.status(500).json(new ApiError(500, "Error has occurred"));
+  }
+});
+
 module.exports = {
   addQuestion,
   updateQuestion,
   deleteQuestion,
   getAllQuestions,
   getUserQuestionHistory,
+  getQuestionsRelatedToUserSubscribedTags
 };
