@@ -143,77 +143,17 @@ const getQuestionsRelatedToUserSubscribedTags = asyncHandler(async (req, res) =>
         path: 'owner', // Populate question owner details
         select: 'username profileImage'
       });
-
-    res.status(200).json(new ApiResponse(200, questions, "User's interested questions fetched successfully"));
+      const enhancedQuestions = questions.map((question) => ({
+        ...question.toObject(),
+        totalAnswers: question.answers.length,
+      }));
+        
+    res.status(200).json(new ApiResponse(200, enhancedQuestions, "User's interested questions fetched successfully"));
   } catch (error) {
     console.error(error);  // Log error for debugging
     res.status(500).json(new ApiError(500, "Error has occurred"));
   }
 });
-
-const getQuestionsWithAnswerCounts = asyncHandler(async (req, res) => {
-  try {
-    // Aggregation pipeline
-    const questions = await Question.aggregate([
-      // Look for answers and count them
-      {
-        $lookup: {
-          from: 'answers',  // Collection to join
-          localField: '_id', // Field from the question collection
-          foreignField: 'question', // Field in the answer collection
-          as: 'answers', // New field where joined data will be placed
-        },
-      },
-      // Add total answer count
-      {
-        $addFields: {
-          totalAnswers: { $size: '$answers' },  // Size of answers array
-        },
-      },
-      // Optionally, for each answer, calculate the number of replies (if you have a reply system)
-      {
-        $lookup: {
-          from: 'answers',  // Again, joining with answers collection
-          localField: '_id', // Field from question collection
-          foreignField: 'parentAnswer', // Assuming you have a `parentAnswer` field for replies
-          as: 'replies', // New field where replies data will be placed
-        },
-      },
-      // Add total replies for each question
-      {
-        $addFields: {
-          totalReplies: { $sum: { $map: { input: '$answers', as: 'answer', in: { $size: '$replies' } } } },
-        },
-      },
-      // Optionally, populate the owner and other fields if needed
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'owner',
-          foreignField: '_id',
-          as: 'ownerDetails',
-        },
-      },
-      {
-        $unwind: '$ownerDetails',  // Flatten the ownerDetails array (only one owner per question)
-      },
-      {
-        $project: {
-          content: 1,
-          totalAnswers: 1,
-          totalReplies: 1,
-          'ownerDetails.username': 1,
-          'ownerDetails.profileImage': 1,
-        },
-      },
-    ]);
-
-    res.status(200).json(new ApiResponse(200, questions, "Feed data fetched successfully"));
-  } catch (error) {
-    res.status(500).json(new ApiError(500, "Error fetching feed data"));
-  }
-});
-
 
 module.exports = {
   addQuestion,
@@ -222,5 +162,4 @@ module.exports = {
   getAllQuestions,
   getUserQuestionHistory,
   getQuestionsRelatedToUserSubscribedTags,
-  getQuestionsWithAnswerCounts
 };

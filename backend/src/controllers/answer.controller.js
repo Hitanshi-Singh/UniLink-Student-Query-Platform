@@ -66,9 +66,13 @@ const getQuestionAnswers = asyncHandler(async (req, res) => {
   const answers = await Answer.find({question_id:id})
     .populate("owner", "username")
     .select("content owner createdAt");
+    const enhancedAnswers = answers.map((answer) => ({
+      ...answer.toObject(),
+      totalAnswers: answer.replies.length,
+    }));
   res
     .status(200)
-    .json(new ApiResponse(200, answers, "All answers fetched successfully"));
+    .json(new ApiResponse(200, enhancedAnswers, "All answers fetched successfully"));
 });
 
 const getCurrentAnswer = asyncHandler(async (req, res) => {

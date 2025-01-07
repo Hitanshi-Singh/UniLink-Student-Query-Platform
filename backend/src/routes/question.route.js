@@ -6,7 +6,6 @@ const {
     getAllQuestions, 
     getQuestionsRelatedToUserSubscribedTags, 
     getUserQuestionHistory,
-    getQuestionsWithAnswerCounts
 } = require("../controllers/question.controller.js");
 const { upload } = require("../middlewares/multer.middleware.js");
 const { verifyJWT } = require("../middlewares/auth.middleware.js");
@@ -27,7 +26,5 @@ router.route('/questions/delete/:id'). delete(verifyJWT, deleteQuestion);
 router.route('/questions/user-subscribed-tags').get(verifyJWT, getQuestionsRelatedToUserSubscribedTags);
 
 router.route('/user/history').get(verifyJWT, getUserQuestionHistory);
-
-router.route("/questions/feed").get(verifyJWT, getQuestionsWithAnswerCounts);
 
 module.exports= router;
