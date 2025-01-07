@@ -70,8 +70,40 @@ const getAllAnswers = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, answers, "All answers fetched successfully"));
 });
 
+const getCurrentAnswer = asyncHandler(async (req, res) => {
+  try {
+    // Extract the answer ID from the request parameters
+    const { answerId } = req.params;
+
+    if (!answerId) {
+      throw new ApiError(400, "Answer ID is required");
+    }
+
+    // Find the answer by ID and populate relevant fields
+    const answer = await Answer.findById(answerId)
+      .populate({
+        path: 'answeredBy',
+        select: 'username profileImage'
+      })
+      .populate({
+        path: 'question', 
+        select: 'content owner relatedTags'
+      });
+
+    if (!answer) {
+      throw new ApiError(404, "Answer not found");
+    }
+
+    res.status(200).json(new ApiResponse(200, answer, "Answer fetched successfully"));
+  } catch (error) {
+    res.status(500).json(new ApiError(500, "An error occurred while fetching the answer"));
+  }
+});
+
+
 module.exports = {
   addAnswer,
   deleteAnswer,
   getAllAnswers,
+  getCurrentAnswer
 };

@@ -3,6 +3,7 @@ const {
   addAnswer,
   deleteAnswer,
   getAllAnswers,
+  getCurrentAnswer
 } = require("../controllers/answer.controller.js");
 const { upload } = require("../middlewares/multer.middleware.js");
 const { verifyJWT } = require("../middlewares/auth.middleware.js");
@@ -17,6 +18,7 @@ router
   .post(verifyJWT, upload.fields([{ name: "images", maxCount: 5 }]), addAnswer);
 
 router.route("/:questionId/answer/delete/:id").delete(verifyJWT, deleteAnswer);
+router.route('/answer/:answerId').get(verifyJWT, getCurrentAnswer);
 
 // router.route()
 module.exports = router;
