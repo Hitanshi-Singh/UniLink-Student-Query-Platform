@@ -7,7 +7,8 @@ const {
     changeCurrentPassword, 
     getCurrentUser, 
     updateAccountDetails,
-    updateUserDP
+    updateUserDP,
+    getUserUpvotes
 } = require("../controllers/user.controller.js");
 const { upload } = require("../middlewares/multer.middleware.js");
 const { verifyJWT } = require("../middlewares/auth.middleware.js");
@@ -34,7 +35,7 @@ router.route("/refresh-token").post(refreshAccessToken)
 router.route("/change-password").post(verifyJWT, changeCurrentPassword)
 router.route("/current-user").get(verifyJWT, getCurrentUser)
 router.route("/update-account").patch(verifyJWT, updateAccountDetails)
-
+router.route("/user/upvotes").get(verifyJWT, getUserUpvotes);
 router.route("/profileimage").patch(verifyJWT, upload.single("profileImage"), updateUserDP)
 
 module.exports= router

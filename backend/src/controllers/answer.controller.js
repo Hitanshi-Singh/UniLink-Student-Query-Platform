@@ -65,10 +65,11 @@ const getQuestionAnswers = asyncHandler(async (req, res) => {
   const id=req.params.id
   const answers = await Answer.find({question_id:id})
     .populate("owner", "username")
-    .select("content owner createdAt");
+    .select("content owner createdAt upvotes");
     const enhancedAnswers = answers.map((answer) => ({
       ...answer.toObject(),
       totalAnswers: answer.replies.length,
+      totalUpvotes: answer.upvotes||0
     }));
   res
     .status(200)

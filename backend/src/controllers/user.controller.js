@@ -243,6 +243,20 @@ const changeCurrentPassword = asyncHandler(async(req, res) => {
     .json(new ApiResponse(200, {}, "Password changed successfully"))
 })
 
+const getUserUpvotes = asyncHandler(async (req, res) => {
+    const userId = req.user._id; 
+  
+    // Aggregate total upvotes from answers owned by the user
+    const totalUpvotes = await Answer.aggregate([
+      { $match: { owner: userId } }, // Filter answers by the user
+      { $group: { _id: null, totalUpvotes: { $sum: "$upvotes" } } }, // Sum upvotes
+    ]);
+  
+    const total = totalUpvotes[0]?.totalUpvotes || 0;
+  
+    res.status(200).json(new ApiResponse(200, { totalUpvotes: total }, "User's total upvotes fetched successfully"));
+  });
+  
 
 const getCurrentUser = asyncHandler(async(req, res) => {
     return res
