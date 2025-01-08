@@ -33,9 +33,9 @@ const registerUser = asyncHandler( async (req, res) => {
     // remove password and refresh token field from response
     // check for user creation
     // return res
+    console.log(req.files);
 
-
-    const { fullName, email, username, password, dept, selectedTags } = req.body;
+    const { fullName, email, username, password, dept, selectedTags, profileImage } = req.body;
 
     // Validate fields
     if ([fullName, email, username, password].some((field) => field?.trim() === "")) {
@@ -50,61 +50,43 @@ const registerUser = asyncHandler( async (req, res) => {
     if (existedUser) {
         throw new ApiError(409, "User with email or username already exists");
     }
+    const defaultProfileImageUrl = "https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
+        const profileLocalPath = (req?.files?.profileImage && req.files.profileImage[0]?.path) || null;
     
-    // Process profile image
-    // const profileLocalPath = req?.files?.profile[0]?.path;
+        let profileImgUrl = defaultProfileImageUrl;
     
-    // if (!profileLocalPath) {
-    //     throw new ApiError(400, "Avatar file is required");
-        
-    // }
+        if (profileLocalPath) {
+            const profileImg = await uploadOnCloudinary(profileLocalPath);
     
-    // const profileImage = await uploadOnCloudinary(profileLocalPath);
+            if (!profileImg) {
+                throw new ApiError(400, "Profile picture upload failed");
+            }
     
-    // if (!profileImage) {
-    //     throw new ApiError(400, "Profile picture upload failed");
-    // }
-    
-    // Create user
-    const user = await User.create({
-        fullName,
-        // profileImage: profileImage?.url,
-        profileImage:"",
-        email, 
-        password,
-        username: username.toLowerCase(),
-        dept,  // Store selected stream
-        subscribedTags: selectedTags  // Store the tags selected by the user (from the frontend)
-    });
-    
-    const createdUser = await User.findById(user._id).select("-password -refreshToken");
-    
-    if (!createdUser) {
-        throw new ApiError(500, "Something went wrong while registering the user");
-    }
-    
-    //  **Aggregating Sum of Upvotes for User**: To display the sum of upvotes across all answers for a user
-    
-    const getUserTotalUpvotes = async (userId) => {
-        const totalUpvotes = await Answer.aggregate([
-            { $match: { user: userId } }, // Match answers by userId
-            { $group: { _id: "$user", totalUpvotes: { $sum: "$upvotes" } } } // Sum up the upvotes
-        ]);
-    
-        if (totalUpvotes.length === 0) {
-            return 0; // No upvotes
+            profileImgUrl = profileImg.url;
         }
     
-        return totalUpvotes[0].totalUpvotes;
-    };
+        const user = await User.create({
+            fullName,
+            profileImage: profileImgUrl,
+            email,
+            password,
+            username: username.toLowerCase(),
+            dept,
+            subscribedTags: selectedTags,
+        });
     
-    //const totalUpvotes = await getUserTotalUpvotes(user._id);
+        const createdUser = await User.findById(user._id).select("-password -refreshToken");
     
-    // Send response with created user and total upvotes
-    return res.status(201).json(
-        new ApiResponse(200, { createdUser }, "User registered successfully")
-    );
-});
+        if (!createdUser) {
+            throw new ApiError(500, "Something went wrong while registering the user");
+        }
+        
+        // Send response with created user and total upvotes
+        return res.status(201).json(
+            new ApiResponse(200, { createdUser }, "User registered successfully")
+        );
+    });
+    
     
 
 const loginUser = asyncHandler( async(req,res)=>{
@@ -327,4 +309,4 @@ const updateUserDP = asyncHandler(async(req, res) => {
 
 
 module.exports= {registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails,
-    updateUserDP}
+    updateUserDP,getUserUpvotes}

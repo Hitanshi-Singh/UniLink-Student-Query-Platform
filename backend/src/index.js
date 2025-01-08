@@ -6,7 +6,7 @@ dotenv.config({
     path: "./.env"
 });
 
-
+//console.log('Cloudinary Config:', process.env.CLOUDINARY_CLOUD_NAME);
 
 const PORT = process.env.PORT || 3000;
 
