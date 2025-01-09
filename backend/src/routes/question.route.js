@@ -17,14 +17,12 @@ router.route('/questions').get(getAllQuestions);
 
 router.route('/addQuestion').post(verifyJWT,
     upload.fields([{ name: 'images', maxCount: 5}]),
-    addQuestion ).patch( verifyJWT, 
-    upload.fields([{ name: 'images', maxCount: 5}]),
-    updateQuestion);
+    addQuestion );
 
 router.route('/delete/:id'). delete(verifyJWT, deleteQuestion); 
 
 router.route('/user-subscribed-tags').get(verifyJWT, getQuestionsRelatedToUserSubscribedTags);
-router.route('/updateQuestion/:id').patch(verifyJWT,updateQuestion);
+router.route('/updateQuestion/:id').patch(verifyJWT,upload.fields([{ name: 'images', maxCount: 5}]),updateQuestion);
 
 
 router.route('/user/history').get(verifyJWT, getUserQuestionHistory);

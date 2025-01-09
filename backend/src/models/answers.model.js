@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { User } = require("../models/user.model.js");
 const { Schema } = mongoose;
 
 const answerSchema = new Schema(
@@ -32,36 +33,14 @@ const answerSchema = new Schema(
   { timestamps: true },
 );
 
-answerSchema.methods.upvote = async function () {
+answerSchema.methods.addUpvote = async function () {
   this.upvotes += 1; // Increment the upvotes for the answer
   await this.save(); // Save the answer
 
   // Update the totalUpvotes for the user
-  const user = await User.findById(this.user);
+  const user = await User.findById(this.answeredBy);
   user.totalUpvotes += 1;
   await user.save();
 };
-
-// update the upvote functionality with a trigger
-
-// 1. **Increment Upvotes on Answer**: When a user receives an upvote, you can increment the upvote count for the answer.
-
-const incrementUpvotes = async (answerId) => {
-  const answer = await Answer.findById(answerId);
-
-  if (!answer) {
-    throw new ApiError(404, "Answer not found");
-  }
-
-  answer.upvotes += 1;
-  await answer.save();
-};
-
-answerSchema.post("save", async function (doc) {
-  // This will be called after saving the document
-  if (this.isModified("upvotes")) {
-    await incrementUpvotes(doc._id);
-  }
-});
 
 module.exports = mongoose.model("Answer", answerSchema);

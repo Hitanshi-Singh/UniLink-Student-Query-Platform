@@ -94,8 +94,17 @@ const updateQuestion = asyncHandler(async (req, res) => {
   if (question.owner.toString() !== req.user.id) {
     throw new ApiError(403, "Not authorized to update this question");
   }
+  let imageUrls = [];
+  if (req.files?.images) {
+    const uploadPromises = req.files.images.map(async (file) => {
+      const uploadedImage = await uploadOnCloudinary(file.path);
+      return uploadedImage?.url;
+    });
 
+    imageUrls = await Promise.all(uploadPromises);
+  }
   question.content = content || question.content;
+  question.images = imageUrls;
   const updatedQuestion = await question.save();
   res
     .status(200)

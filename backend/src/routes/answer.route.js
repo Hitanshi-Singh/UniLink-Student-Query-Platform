@@ -3,7 +3,8 @@ const {
   addAnswer,
   deleteAnswer,
   getQuestionAnswers,
-  getCurrentAnswer
+  getCurrentAnswer,
+  upvoteAnswer
 } = require("../controllers/answer.controller.js");
 const { upload } = require("../middlewares/multer.middleware.js");
 const { verifyJWT } = require("../middlewares/auth.middleware.js");
@@ -19,4 +20,5 @@ router.route("/answers").post(verifyJWT, upload.fields([{ name: "images", maxCou
 
 router.route("/:questionId/answer/delete/:id").delete(verifyJWT, deleteAnswer);
 router.route('/answer/:answerId').get(verifyJWT, getCurrentAnswer);
+router.route('/answer/:answerId/upvote').patch(verifyJWT, upvoteAnswer);
 module.exports = router;

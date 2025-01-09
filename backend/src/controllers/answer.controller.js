@@ -21,12 +21,22 @@ const addAnswer = asyncHandler(async (req, res) => {
 
   // Get the owner from the authenticated user
   const owner = req.user._id;
-
+  //Handling image upload
+   let imageUrls = [];
+    if (req.files?.images) {
+      const uploadPromises = req.files.images.map(async (file) => {
+        const uploadedImage = await uploadOnCloudinary(file.path);
+        return uploadedImage?.url;
+      });
+  
+      imageUrls = await Promise.all(uploadPromises);
+    }
   // Create the answer
   const answer = await Answer.create({
     answer_content:content,
     question: questionId,
     answeredBy:owner,
+    images: imageUrls
   });
 
   // Add the answer ID to the question's answers array
@@ -110,10 +120,21 @@ const getCurrentAnswer = asyncHandler(async (req, res) => {
   }
 });
 
+const upvoteAnswer= asyncHandler(async(req,res)=>{
+  const {answerId}= req.params;
+  const answer = await Answer.findById(answerId);
+  if (!answer) {
+    return res.status(404).json({ error: "Answer not found" });
+  }
+  await answer.upvote();
+  res.status(200).json({ success: true, upvotes: answer.upvotes });
+
+})
 
 module.exports = {
   addAnswer,
   deleteAnswer,
   getQuestionAnswers,
-  getCurrentAnswer
+  getCurrentAnswer,
+  upvoteAnswer
 };
