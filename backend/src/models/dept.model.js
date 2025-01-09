@@ -11,6 +11,15 @@ const deptSchema= new Schema(
         type: String,
         required:true
     },
+    dept_head: {
+        type: String,
+    },
+    dept_email: {
+        type: String
+    },
+    total_students: {
+        type: Number,
+    }
    }
 )
 
