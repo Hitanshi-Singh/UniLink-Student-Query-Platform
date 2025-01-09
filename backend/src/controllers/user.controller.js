@@ -1,6 +1,7 @@
 const  asyncHandler  = require("../utils/asynchandler.utils.js");
 const  ApiError  = require("../utils/API_Error.js");
 const { User } = require("../models/user.model.js");
+const { Tag } = require("../models/tag.model.js");
 const { uploadOnCloudinary } = require("../utils/cloudinary.js");
 const ApiResponse  = require("../utils/API_Response.js");
 const jwt = require("jsonwebtoken");
@@ -33,7 +34,7 @@ const registerUser = asyncHandler( async (req, res) => {
     // remove password and refresh token field from response
     // check for user creation
     // return res
-    console.log(req.files);
+
 
     const { fullName, email, username, password, dept, selectedTags, profileImage } = req.body;
 
@@ -50,6 +51,11 @@ const registerUser = asyncHandler( async (req, res) => {
     if (existedUser) {
         throw new ApiError(409, "User with email or username already exists");
     }
+    const departmentExists = await Department.findById(dept);
+/*if (!departmentExists) {
+    return res.status(400).json({ message: "Invalid department ID" });
+}
+*/
     const defaultProfileImageUrl = "https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
         const profileLocalPath = (req?.files?.profileImage && req.files.profileImage[0]?.path) || null;
     
@@ -72,9 +78,27 @@ const registerUser = asyncHandler( async (req, res) => {
             password,
             username: username.toLowerCase(),
             dept,
-            subscribedTags: selectedTags,
+            subscribedTags: [],
         });
-    
+        // Process and associate tags
+  const tagIds = [];
+  for (const tagName of selectedTags) {
+    let tag = await Tag.findOne({ name: tagName });
+
+    if (!tag) {
+      // Tag doesn't exist, create it and associate the `createdBy` field
+      tag = await Tag.create({
+        name: tagName,
+        createdBy: user._id, // Associate the tag with the currently registering user
+      });
+    }
+
+    tagIds.push(tag._id); // Collect tag IDs to associate with the user
+  }
+
+  // Update the user's subscribed tags
+  user.subscribedTags = tagIds;
+  await user.save();
         const createdUser = await User.findById(user._id).select("-password -refreshToken");
     
         if (!createdUser) {
