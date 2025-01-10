@@ -1,3 +1,4 @@
+
 /* eslint-disable react/prop-types */
 
 import { ThumbsDown, ThumbsUp } from "lucide-react";
@@ -7,32 +8,53 @@ const AnswerBox = ({ data }) => {
   const [vote, setVote] = useState("none");
   // if (data.length == 0) return;
   const { answer_content, answeredBy, createdAt, _id } = data;
+  const token = localStorage.getItem("token");
   useEffect(() => {
-    const fetchUpvotes = async () => {
-      const token = localStorage.getItem('token'); 
-      if(!token){
-        console.log("You need to login bro");
-        return;
-      }
+    const getAnswerData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/answers/${_id}/upvote`,
+          `http://localhost:3000/api/answers/${_id}`,
           {
-            method: "Patch",
+            method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              "Authorization": `Bearer ${token}`,
             },
           }
         );
+        console.error()
         const data = await response.json();
         console.log(data);
-      } catch(err) {
+        console.log("I am in try block");
+      } catch (err) {
         console.log(err);
       }
     };
-    fetchUpvotes();
-  }, [_id]);
+    getAnswerData()
+  });
+  if (!token) {
+    console.log("You need to login bro");
+    return;
+  }
+
+  const updateUpvotes = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/answers/${_id}/upvote`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const { username } = answeredBy;
   const formatDate = (dateString) => {
     const date = new Date(dateString); // Convert the ISO string to a Date object
@@ -62,6 +84,7 @@ const AnswerBox = ({ data }) => {
             fill={vote == "up" ? "white" : ""}
             onClick={() =>
               setVote((e) => {
+                updateUpvotes()
                 if (e == "up") return "none";
                 else {
                   return "up";

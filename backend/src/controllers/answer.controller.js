@@ -1,13 +1,13 @@
 const asyncHandler = require("../utils/asynchandler.utils.js");
 const ApiError = require("../utils/API_Error.js");
-const  Answer  = require("../models/answers.model.js");
-const  Question  = require("../models/question.model.js");
+const Answer = require("../models/answers.model.js");
+const Question = require("../models/question.model.js");
 const uploadOnCloudinary = require("../utils/cloudinary.js");
 const ApiResponse = require("../utils/API_Response.js");
 
 const addAnswer = asyncHandler(async (req, res) => {
   const { content, questionId } = req.body;
-  console.log(content,questionId)
+  console.log(content, questionId);
   // Validate required fields
   if ([content, questionId].some((field) => field?.trim() === "")) {
     throw new ApiError(400, "Answer content or question ID is missing");
@@ -22,21 +22,21 @@ const addAnswer = asyncHandler(async (req, res) => {
   // Get the owner from the authenticated user
   const owner = req.user._id;
   //Handling image upload
-   let imageUrls = [];
-    if (req.files?.images) {
-      const uploadPromises = req.files.images.map(async (file) => {
-        const uploadedImage = await uploadOnCloudinary(file.path);
-        return uploadedImage?.url;
-      });
-  
-      imageUrls = await Promise.all(uploadPromises);
-    }
+  let imageUrls = [];
+  if (req.files?.images) {
+    const uploadPromises = req.files.images.map(async (file) => {
+      const uploadedImage = await uploadOnCloudinary(file.path);
+      return uploadedImage?.url;
+    });
+
+    imageUrls = await Promise.all(uploadPromises);
+  }
   // Create the answer
   const answer = await Answer.create({
-    answer_content:content,
+    answer_content: content,
     question: questionId,
-    answeredBy:owner,
-    images: imageUrls
+    answeredBy: owner,
+    images: imageUrls,
   });
 
   // Add the answer ID to the question's answers array
@@ -47,7 +47,6 @@ const addAnswer = asyncHandler(async (req, res) => {
     .status(201)
     .json(new ApiResponse(201, answer, "Answer added successfully"));
 });
-
 
 const deleteAnswer = asyncHandler(async (req, res) => {
   const { questionId, id: answerId } = req.params;
@@ -72,18 +71,20 @@ const deleteAnswer = asyncHandler(async (req, res) => {
 });
 
 const getQuestionAnswers = asyncHandler(async (req, res) => {
-  const id=req.params.questionId
-  const answers = await Answer.find({question:id})
+  const id = req.params.questionId;
+  const answers = await Answer.find({ question: id })
     .populate("answeredBy", "username")
     .select("answer_content owner createdAt");
-    const enhancedAnswers = answers.map((answer) => ({
-      ...answer.toObject(),
-      totalAnswers: answer?.replies?.length,
-      totalUpvotes: answer.upvotes||0
-    }));
+  const enhancedAnswers = answers.map((answer) => ({
+    ...answer.toObject(),
+    totalAnswers: answer?.replies?.length,
+    totalUpvotes: answer.upvotes || 0,
+  }));
   res
     .status(200)
-    .json(new ApiResponse(200, enhancedAnswers, "All answers fetched successfully"));
+    .json(
+      new ApiResponse(200, enhancedAnswers, "All answers fetched successfully"),
+    );
 });
 
 const getCurrentAnswer = asyncHandler(async (req, res) => {
@@ -98,43 +99,47 @@ const getCurrentAnswer = asyncHandler(async (req, res) => {
     // Find the answer by ID and populate relevant fields
     const answer = await Answer.findById(answerId)
       .populate({
-        path: 'answeredBy',
-        select: 'username profileImage'
+        path: "answeredBy",
+        select: "username profileImage",
       })
       .populate({
-        path: 'question', 
-        select: 'content owner relatedTags'
+        path: "question",
+        select: "content owner relatedTags",
       })
       .populate({
-        path: 'replies', 
-        select: 'content'
-      });
+        path: "replies",
+        select: "content",
+      })
+      .select("upvotes");
 
     if (!answer) {
       throw new ApiError(404, "Answer not found");
     }
 
-    res.status(200).json(new ApiResponse(200, answer, "Answer fetched successfully"));
+    res
+      .status(200)
+      .json(new ApiResponse(200, answer, "Answer fetched successfully"));
   } catch (error) {
-    res.status(500).json(new ApiError(500, "An error occurred while fetching the answer"));
+    res
+      .status(500)
+      .json(new ApiError(500, "An error occurred while fetching the answer"));
   }
 });
 
-const upvoteAnswer= asyncHandler(async(req,res)=>{
-  const {answerId}= req.params;
+const upvoteAnswer = asyncHandler(async (req, res) => {
+  const { answerId } = req.params;
   const answer = await Answer.findById(answerId);
   if (!answer) {
     return res.status(404).json({ error: "Answer not found" });
   }
   await answer.addUpvote();
   res.status(200).json({ success: true, upvotes: answer.upvotes });
-
-})
+});
 
 module.exports = {
   addAnswer,
   deleteAnswer,
   getQuestionAnswers,
   getCurrentAnswer,
-  upvoteAnswer
+  upvoteAnswer,
 };
