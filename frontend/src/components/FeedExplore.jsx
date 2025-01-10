@@ -10,7 +10,7 @@ const FeedExplore = () => {
         console.log("You need to login bro");
         return;
       }
-      console.log(token)
+      // console.log(token)
       try{
         const res = await fetch("http://localhost:3000/api/questions/questions",{
           method:"GET",
@@ -21,7 +21,7 @@ const FeedExplore = () => {
         });
         const data=await res.json();
       setQuestionsArray(data.data);
-      console.log(data.data);
+      // console.log(data.data);
       }
       catch(err){
         console.log(err)

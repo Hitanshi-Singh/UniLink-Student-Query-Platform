@@ -20,11 +20,13 @@ const Login = () => {
         },
         body: JSON.stringify(payload),
       });
+      // console.log(response)
       const data = await response.json();
       window.localStorage.setItem("token",data.data.accessToken)
       navigate('/feed');
     } catch(err) {
       console.log(err);
+      // console.log("hello")
     }
   };
   return (
