@@ -19,6 +19,6 @@ router
 router.route("/answers").post(verifyJWT, upload.fields([{ name: "images", maxCount: 5 }]), addAnswer);
 
 router.route("/:questionId/answer/delete/:id").delete(verifyJWT, deleteAnswer);
-router.route('/answer/:answerId').get(verifyJWT, getCurrentAnswer);
-router.route('/answer/:answerId/upvote').patch(verifyJWT, upvoteAnswer);
+router.route('/:answerId').get(verifyJWT, getCurrentAnswer);
+router.route('/:answerId/upvote').patch(verifyJWT, upvoteAnswer);
 module.exports = router;

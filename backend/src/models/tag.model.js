@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { User } from "./user.model";
+const mongoose = require("mongoose");
+const { User } = require("./user.model");
 const tagsSchema = new mongoose.Schema({
   description: {
     type: String,

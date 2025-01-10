@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const AddAnswerBox = ({ closeAnswer, id }) => {
+const AddAnswerBox = ({ closeAnswer, id,onAdd }) => {
   const [answer, setAnswer] = useState("");
   const [token, setToken] = useState("");
   const fetchData = async () => {
@@ -18,6 +18,7 @@ const AddAnswerBox = ({ closeAnswer, id }) => {
     setAnswer(e.target.value);
   };
   const onSubmit = async () => {
+    onAdd(true);
     
     fetchData();
     try {

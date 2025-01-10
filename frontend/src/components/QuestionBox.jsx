@@ -8,6 +8,7 @@ const QuestionBox = ({ question }) => {
   const [answerData, setAnswerData] = useState([]);
   const [openAddAnswer, setOpenAddAnswer] = useState(false);
   const [showAllAnswers, setShowAllAnswers] = useState(false);
+  const [addedAnswer,setAddedAnswer]=useState(false);
   useEffect(() => {
     const fetchAnswers = async () => {
       try {
@@ -28,7 +29,7 @@ const QuestionBox = ({ question }) => {
       }
     };
     fetchAnswers();
-  }, [_id]);
+  }, [_id,addedAnswer]);
   const formatDate = (dateString) => {
     const date = new Date(dateString); // Convert the ISO string to a Date object
     return date.toLocaleString(); // Format it as a human-readable string
@@ -77,12 +78,14 @@ const QuestionBox = ({ question }) => {
             ) : (
               <AnswerBox data={answerData[0]} />
             ))}
-          <button
+          {
+            answerData.length>0&&<button
             onClick={() => setShowAllAnswers(!showAllAnswers)}
             className="w-28 p-2 px-3 cursor-pointer  border border-secondary-color text-sm text-center "
           >
             {showAllAnswers ? "show less " : "show more"}
           </button>
+          }
 
           {!openAddAnswer ? (
             <button
@@ -95,6 +98,7 @@ const QuestionBox = ({ question }) => {
             <AddAnswerBox
               closeAnswer={() => setOpenAddAnswer(false)}
               id={_id}
+              onAdd={setAddedAnswer}
             />
           )}
         </div>
