@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
+<<<<<<< HEAD
 const { User } = require("./user.model");
+=======
+>>>>>>> ad0e758 (changes)
 const tagsSchema = new mongoose.Schema({
   description: {
     type: String,
@@ -11,7 +14,7 @@ const tagsSchema = new mongoose.Schema({
   },
   createdBy:{
     type: mongoose.Schema.Types.ObjectId,
-    ref:User
+    ref: "User"
   }
 }, {timestamps: true});
 /*  
@@ -79,4 +82,4 @@ const busTags = new Tag({
 await busTags.save();
 */
 const Tag = mongoose.model('Tag', tagsSchema);
-module.exports = Tag;
+module.exports = {Tag};

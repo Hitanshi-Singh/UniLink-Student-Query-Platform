@@ -9,15 +9,15 @@ const addReply = asyncHandler(async(req,res) =>{
     if ([content, answerId].some((field) => field?.trim() === "")) {
         throw new ApiError(400, "Reply content or answer ID is missing");
     }
-    const answer = await Answer.findById(questionId);
+    const answer = await Answer.findById(answerId);
     if (!answer) {
-        throw new ApiError(404, "Question not found");
+        throw new ApiError(404, "Answer not found");
     }
-    const owner=req.user._id;
+    const owner=req.user?._id;
     const reply = await Reply.create({
         content,
         answer: answerId,
-        answeredBy:owner
+        createdBy:owner
       });
       answer.replies.push(reply._id);
       await answer.save();

@@ -1,8 +1,9 @@
+const mongoose = require("mongoose");
 const  asyncHandler  = require("../utils/asynchandler.utils.js");
 const  ApiError  = require("../utils/API_Error.js");
 const { User } = require("../models/user.model.js");
 const { Tag } = require("../models/tag.model.js");
-const { Dept } = require("../models/tag.model.js");
+const { Dept } = require("../models/dept.model.js");
 const { uploadOnCloudinary } = require("../utils/cloudinary.js");
 const ApiResponse  = require("../utils/API_Response.js");
 const jwt = require("jsonwebtoken");
@@ -25,6 +26,38 @@ const generateAccessAndRefereshTokens = async(userId) =>{
     }
 }
 
+const handleDepartment = async (dept) => {
+    // Check if dept is a valid ObjectId or string
+    if (!dept) return;
+    
+    // Find department by ID if it's passed as an ObjectId
+    try {
+        // Check if `dept` is an ObjectId
+        if (mongoose.Types.ObjectId.isValid(dept)) {
+            departmentExists = await Dept.findById(dept);
+        } else {
+            // If `dept` is a string, search by department name
+            departmentExists = await Dept.findOne({ dept_name: dept.dept_name });
+        }
+
+        // If department doesn't exist, create it
+        if (!departmentExists) {
+            departmentExists = await Dept.create({
+                dept_name: dept.dept_name, // Ensure `dept_name` matches the schema
+                dept_head: dept.dept_head,
+                dept_email: dept.dept_email,
+                total_students: dept.total_students
+                }
+        );
+        }
+
+        return departmentExists;
+    } catch (error) {
+        console.error('Error in handleDepartment:', error);
+        throw new Error('Error handling department');
+    }
+};
+
 const registerUser = asyncHandler( async (req, res) => {
     // get user details from frontend
     // validation - not empty
@@ -38,7 +71,7 @@ const registerUser = asyncHandler( async (req, res) => {
 
 
     const { fullName, email, username, password, dept, selectedTags} = req.body;
-
+    console.log(req.body);
     // Validate fields
     if ([fullName, email, username, password].some((field) => field?.trim() === "")) {
         throw new ApiError(400, "All fields are required");
@@ -52,11 +85,7 @@ const registerUser = asyncHandler( async (req, res) => {
     if (existedUser) {
         throw new ApiError(409, "User with email or username already exists");
     }
-    const departmentExists = await Department.findById(dept);
-if (!departmentExists) {
-    department = await Dept.create(dept);
-await department.save();
-}
+    const departmentExists = await handleDepartment(dept);
 
     const defaultProfileImageUrl = "https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
         const profileLocalPath = (req?.files?.profileImage && req.files.profileImage[0]?.path) || null;
@@ -79,21 +108,24 @@ await department.save();
             email,
             password,
             username: username.toLowerCase(),
-            dept: dept?._id,
+            dept: departmentExists?._id,
             subscribedTags: [],
         });
         // Process and associate tags
-  const tagIds = [];
-  for (const tagName of selectedTags) {
-    let tag = await Tag.findOne({ name: tagName });
-
-    if (!tag) {
-      // Tag doesn't exist, create it and associate the `createdBy` field
-      tag = await Tag.create({
-        name: tagName,
-        createdBy: user._id, // Associate the tag with the currently registering user
-      });
-    }
+        const tagIds = [];
+        const tags = Array.isArray(selectedTags) ? selectedTags : selectedTags.split(','); // Ensure selectedTags is an array
+        
+        for (const { name, description } of selectedTags) {
+            let tag = await Tag.findOne({ name });
+        
+            if (!tag) {
+                // Tag doesn't exist, create it and associate the `createdBy` field
+                tag = await Tag.create({
+                    name,
+                    description,
+                    createdBy: user._id, // Associate the tag with the currently registering user
+                });
+            }
 
     tagIds.push(tag._id); // Collect tag IDs to associate with the user
   }
