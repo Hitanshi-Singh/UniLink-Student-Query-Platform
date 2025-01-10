@@ -2,6 +2,7 @@ const asyncHandler = require("../utils/asynchandler.utils.js");
 const ApiError = require("../utils/API_Error.js");
 const { User } = require("../models/user.model.js");
 const Question  = require("../models/question.model.js");
+const { Tag } = require("../models/tag.model.js");
 const uploadOnCloudinary = require("../utils/cloudinary.js");
 const ApiResponse = require("../utils/API_Response.js");
 
@@ -20,7 +21,7 @@ console.log("req.user:", req.user);
   ) {
     throw new ApiError(
       400,
-      "Question content, owner, or tags are unselected/invalid",
+      "Question content, owner, or tags are unselected",
     );
   }
 
@@ -39,9 +40,27 @@ console.log("req.user:", req.user);
   const question = await Question.create({
     content,
     owner: req.user._id,
-    relatedTags,
+    relatedTags: [],
     images: imageUrls,
   });
+  const tagIds = [];
+  for (const tagName of relatedTags) {
+    let tag = await Tag.findOne({ name: tagName });
+
+    if (!tag) {
+      // Tag doesn't exist, create it and associate the `createdBy` field
+      tag = await Tag.create({
+        name: tagName,
+        createdBy: req.user._id, // Associate the tag with the currently registering user
+      });
+    }
+
+    tagIds.push(tag._id); // Collect tag IDs to associate with the user
+  }
+
+  // Update the question's related tags
+  question.relatedTags = tagIds;
+  await question.save();
 
   if (!question) {
     throw new ApiError(500, "Failed to create question");
@@ -75,8 +94,17 @@ const updateQuestion = asyncHandler(async (req, res) => {
   if (question.owner.toString() !== req.user.id) {
     throw new ApiError(403, "Not authorized to update this question");
   }
+  let imageUrls = [];
+  if (req.files?.images) {
+    const uploadPromises = req.files.images.map(async (file) => {
+      const uploadedImage = await uploadOnCloudinary(file.path);
+      return uploadedImage?.url;
+    });
 
+    imageUrls = await Promise.all(uploadPromises);
+  }
   question.content = content || question.content;
+  question.images = imageUrls;
   const updatedQuestion = await question.save();
   res
     .status(200)

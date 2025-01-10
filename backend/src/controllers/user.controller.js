@@ -1,6 +1,8 @@
 const  asyncHandler  = require("../utils/asynchandler.utils.js");
 const  ApiError  = require("../utils/API_Error.js");
 const { User } = require("../models/user.model.js");
+const { Tag } = require("../models/tag.model.js");
+const { Dept } = require("../models/tag.model.js");
 const { uploadOnCloudinary } = require("../utils/cloudinary.js");
 const ApiResponse  = require("../utils/API_Response.js");
 const jwt = require("jsonwebtoken");
@@ -35,7 +37,7 @@ const registerUser = asyncHandler( async (req, res) => {
     // return res
 
 
-    const { fullName, email, username, password, dept, selectedTags } = req.body;
+    const { fullName, email, username, password, dept, selectedTags} = req.body;
 
     // Validate fields
     if ([fullName, email, username, password].some((field) => field?.trim() === "")) {
@@ -50,61 +52,67 @@ const registerUser = asyncHandler( async (req, res) => {
     if (existedUser) {
         throw new ApiError(409, "User with email or username already exists");
     }
+    const departmentExists = await Department.findById(dept);
+if (!departmentExists) {
+    department = await Dept.create(dept);
+await department.save();
+}
+
+    const defaultProfileImageUrl = "https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
+        const profileLocalPath = (req?.files?.profileImage && req.files.profileImage[0]?.path) || null;
     
-    // Process profile image
-    // const profileLocalPath = req?.files?.profile[0]?.path;
+        let profileImgUrl = defaultProfileImageUrl;
     
-    // if (!profileLocalPath) {
-    //     throw new ApiError(400, "Avatar file is required");
-        
-    // }
+        if (profileLocalPath) {
+            const profileImg = await uploadOnCloudinary(profileLocalPath);
     
-    // const profileImage = await uploadOnCloudinary(profileLocalPath);
+            if (!profileImg) {
+                throw new ApiError(400, "Profile picture upload failed");
+            }
     
-    // if (!profileImage) {
-    //     throw new ApiError(400, "Profile picture upload failed");
-    // }
-    
-    // Create user
-    const user = await User.create({
-        fullName,
-        // profileImage: profileImage?.url,
-        profileImage:"",
-        email, 
-        password,
-        username: username.toLowerCase(),
-        dept,  // Store selected stream
-        subscribedTags: selectedTags  // Store the tags selected by the user (from the frontend)
-    });
-    
-    const createdUser = await User.findById(user._id).select("-password -refreshToken");
-    
-    if (!createdUser) {
-        throw new ApiError(500, "Something went wrong while registering the user");
-    }
-    
-    //  **Aggregating Sum of Upvotes for User**: To display the sum of upvotes across all answers for a user
-    
-    const getUserTotalUpvotes = async (userId) => {
-        const totalUpvotes = await Answer.aggregate([
-            { $match: { user: userId } }, // Match answers by userId
-            { $group: { _id: "$user", totalUpvotes: { $sum: "$upvotes" } } } // Sum up the upvotes
-        ]);
-    
-        if (totalUpvotes.length === 0) {
-            return 0; // No upvotes
+            profileImgUrl = profileImg.url;
         }
     
-        return totalUpvotes[0].totalUpvotes;
-    };
+        const user = await User.create({
+            fullName,
+            profileImage: profileImgUrl,
+            email,
+            password,
+            username: username.toLowerCase(),
+            dept: dept?._id,
+            subscribedTags: [],
+        });
+        // Process and associate tags
+  const tagIds = [];
+  for (const tagName of selectedTags) {
+    let tag = await Tag.findOne({ name: tagName });
+
+    if (!tag) {
+      // Tag doesn't exist, create it and associate the `createdBy` field
+      tag = await Tag.create({
+        name: tagName,
+        createdBy: user._id, // Associate the tag with the currently registering user
+      });
+    }
+
+    tagIds.push(tag._id); // Collect tag IDs to associate with the user
+  }
+
+  // Update the user's subscribed tags
+  user.subscribedTags = tagIds;
+  await user.save();
+        const createdUser = await User.findById(user._id).select("-password -refreshToken");
     
-    //const totalUpvotes = await getUserTotalUpvotes(user._id);
+        if (!createdUser) {
+            throw new ApiError(500, "Something went wrong while registering the user");
+        }
+        
+        // Send response with created user and total upvotes
+        return res.status(201).json(
+            new ApiResponse(200, { createdUser }, "User registered successfully")
+        );
+    });
     
-    // Send response with created user and total upvotes
-    return res.status(201).json(
-        new ApiResponse(200, { createdUser }, "User registered successfully")
-    );
-});
     
 
 const loginUser = asyncHandler( async(req,res)=>{
@@ -243,6 +251,20 @@ const changeCurrentPassword = asyncHandler(async(req, res) => {
     .json(new ApiResponse(200, {}, "Password changed successfully"))
 })
 
+const getUserUpvotes = asyncHandler(async (req, res) => {
+    const userId = req.user._id; 
+  
+    // Aggregate total upvotes from answers owned by the user
+    const totalUpvotes = await Answer.aggregate([
+      { $match: { owner: userId } }, // Filter answers by the user
+      { $group: { _id: null, totalUpvotes: { $sum: "$upvotes" } } }, // Sum upvotes
+    ]);
+  
+    const total = totalUpvotes[0]?.totalUpvotes || 0;
+  
+    res.status(200).json(new ApiResponse(200, { totalUpvotes: total }, "User's total upvotes fetched successfully"));
+  });
+  
 
 const getCurrentUser = asyncHandler(async(req, res) => {
     return res
@@ -313,4 +335,4 @@ const updateUserDP = asyncHandler(async(req, res) => {
 
 
 module.exports= {registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails,
-    updateUserDP}
+    updateUserDP,getUserUpvotes}
