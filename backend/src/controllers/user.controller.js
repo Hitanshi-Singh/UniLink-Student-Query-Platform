@@ -2,6 +2,7 @@ const  asyncHandler  = require("../utils/asynchandler.utils.js");
 const  ApiError  = require("../utils/API_Error.js");
 const { User } = require("../models/user.model.js");
 const { Tag } = require("../models/tag.model.js");
+const { Dept } = require("../models/tag.model.js");
 const { uploadOnCloudinary } = require("../utils/cloudinary.js");
 const ApiResponse  = require("../utils/API_Response.js");
 const jwt = require("jsonwebtoken");
@@ -36,7 +37,7 @@ const registerUser = asyncHandler( async (req, res) => {
     // return res
 
 
-    const { fullName, email, username, password, dept, selectedTags, profileImage } = req.body;
+    const { fullName, email, username, password, dept, selectedTags} = req.body;
 
     // Validate fields
     if ([fullName, email, username, password].some((field) => field?.trim() === "")) {
@@ -52,10 +53,11 @@ const registerUser = asyncHandler( async (req, res) => {
         throw new ApiError(409, "User with email or username already exists");
     }
     const departmentExists = await Department.findById(dept);
-/*if (!departmentExists) {
-    return res.status(400).json({ message: "Invalid department ID" });
+if (!departmentExists) {
+    department = await Dept.create(dept);
+await department.save();
 }
-*/
+
     const defaultProfileImageUrl = "https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
         const profileLocalPath = (req?.files?.profileImage && req.files.profileImage[0]?.path) || null;
     
@@ -77,7 +79,7 @@ const registerUser = asyncHandler( async (req, res) => {
             email,
             password,
             username: username.toLowerCase(),
-            dept,
+            dept: dept?._id,
             subscribedTags: [],
         });
         // Process and associate tags

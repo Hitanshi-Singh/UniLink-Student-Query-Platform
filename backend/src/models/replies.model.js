@@ -10,6 +10,10 @@ const replySchema= new Schema(
     createdBy: {
         type: Schema.Types.ObjectId,
         ref:"User"
+    },
+    answer: {
+        type: Schema.Types.ObjectId,
+        ref: "Answer"
     }
    },{timestamps:true} 
 )

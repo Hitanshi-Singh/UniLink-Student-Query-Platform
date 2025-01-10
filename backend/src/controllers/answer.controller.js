@@ -126,7 +126,7 @@ const upvoteAnswer= asyncHandler(async(req,res)=>{
   if (!answer) {
     return res.status(404).json({ error: "Answer not found" });
   }
-  await answer.upvote();
+  await answer.addUpvote();
   res.status(200).json({ success: true, upvotes: answer.upvotes });
 
 })
