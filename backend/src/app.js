@@ -4,6 +4,7 @@ const cookieParser=require('cookie-parser')
 const userRouter=require('./routes/user.routes')
 const questionRouter=require('./routes/question.route')
 const answerRouter=require('./routes/answer.route')
+const replyRouter=require('./routes/reply.route')
 
 const app = express();
 // app.options('*', cors()); 
@@ -21,5 +22,6 @@ app.use(cookieParser())
 app.use("/api/users",userRouter)
 app.use("/api/questions",questionRouter)
 app.use("/api/answers",answerRouter)
+app.use("/api/replies",replyRouter)
 
 module.exports= app;

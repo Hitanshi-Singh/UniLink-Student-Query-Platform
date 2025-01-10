@@ -1,8 +1,4 @@
 const mongoose = require("mongoose");
-<<<<<<< HEAD
-const { User } = require("./user.model");
-=======
->>>>>>> ad0e758 (changes)
 const tagsSchema = new mongoose.Schema({
   description: {
     type: String,
