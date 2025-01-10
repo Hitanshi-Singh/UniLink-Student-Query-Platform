@@ -62,13 +62,13 @@ const deleteAnswer = asyncHandler(async (req, res) => {
 });
 
 const getQuestionAnswers = asyncHandler(async (req, res) => {
-  const id=req.params.id
-  const answers = await Answer.find({question_id:id})
-    .populate("owner", "username")
-    .select("content owner createdAt");
+  const id=req.params.questionId
+  const answers = await Answer.find({question:id})
+    .populate("answeredBy", "username")
+    .select("answer_content owner createdAt");
     const enhancedAnswers = answers.map((answer) => ({
       ...answer.toObject(),
-      totalAnswers: answer.replies.length,
+      totalAnswers: answer?.replies?.length,
     }));
   res
     .status(200)
