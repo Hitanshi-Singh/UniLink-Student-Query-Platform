@@ -108,8 +108,9 @@ const getCurrentAnswer = asyncHandler(async (req, res) => {
       })
       .populate({
         path: "replies",
-        select: "content",
-      });
+        select: "content createdBy",
+      })
+      .select("upvotes");
 
     if (!answer) {
       throw new ApiError(404, "Answer not found");
