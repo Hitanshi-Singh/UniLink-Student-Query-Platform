@@ -1,22 +1,18 @@
 const mongoose = require("mongoose");
-const { User } = require("./user.model");
-const tagsSchema = new mongoose.Schema(
-  {
-    description: {
-      type: String,
-    },
-    name: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: User,
-    },
+const tagsSchema = new mongoose.Schema({
+  description: {
+    type: String,
   },
-  { timestamps: true },
-);
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  createdBy:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  }
+}, {timestamps: true});
 /*  
   // For Computer Science
 const csTags = new Tag({

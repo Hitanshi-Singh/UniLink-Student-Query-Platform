@@ -17,21 +17,18 @@ const addReply = asyncHandler(async (req, res) => {
     if (!answer) {
         throw new ApiError(404, "Answer not found");
     }
-
-    // Create a new reply
-    const owner = req.user._id;
+    const owner=req.user._id;
     const reply = await Reply.create({
         content,
         answer: answerId,
-        createdBy: owner,
+        answeredBy:owner
+      });
+      answer.replies.push(reply._id);
+      await answer.save();
+    
+      res 
+        .status(201)
+        .json(new ApiResponse(201, answer, "Reply added successfully"));
     });
-
-    // Add reply to the answer's replies array
-    answer.replies.push(reply._id);
-    await answer.save();
-
-    // Return success response with updated answer (optional: populate replies)
-    res.status(201).json(new ApiResponse(201, reply, "Reply added successfully"));
-});
 
 module.exports = { addReply };

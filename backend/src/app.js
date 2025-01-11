@@ -5,6 +5,7 @@ const userRouter=require('./routes/user.routes')
 const questionRouter=require('./routes/question.route')
 const answerRouter=require('./routes/answer.route')
 const replyRouter=require('./routes/reply.route')
+const replyRouter=require('./routes/reply.route')
 
 const app = express();
 // app.options('*', cors()); 
