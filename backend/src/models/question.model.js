@@ -18,7 +18,8 @@ const questionSchema = new Schema(
     ],
     relatedTags: [
       {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: "Tag",  // This references the Tag collection
         required: [true, "Related tags must be specified"],
       },
     ],

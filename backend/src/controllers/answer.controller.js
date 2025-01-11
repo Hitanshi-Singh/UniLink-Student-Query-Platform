@@ -74,7 +74,7 @@ const getQuestionAnswers = asyncHandler(async (req, res) => {
   const id = req.params.questionId;
   const answers = await Answer.find({ question: id })
     .populate("answeredBy", "username")
-    .select("answer_content owner createdAt");
+    .select("answer_content owner createdAt upvotes");
   const enhancedAnswers = answers.map((answer) => ({
     ...answer.toObject(),
     totalAnswers: answer?.replies?.length,
@@ -109,8 +109,7 @@ const getCurrentAnswer = asyncHandler(async (req, res) => {
       .populate({
         path: "replies",
         select: "content",
-      })
-      .select("upvotes");
+      });
 
     if (!answer) {
       throw new ApiError(404, "Answer not found");

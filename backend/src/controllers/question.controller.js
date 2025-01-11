@@ -75,6 +75,7 @@ console.log("req.user:", req.user);
 const getAllQuestions = asyncHandler(async (req, res) => {
   const questions = await Question.find()
     .populate("owner", "username")
+    .populate("relatedTags", "name")
     .select("content owner createdAt relatedTags");
   res
     .status(200)

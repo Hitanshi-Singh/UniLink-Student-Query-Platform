@@ -10,6 +10,7 @@ const QuestionBox = ({ question }) => {
   const [showAllAnswers, setShowAllAnswers] = useState(false);
   const [addedAnswer,setAddedAnswer]=useState(false);
   useEffect(() => {
+    console.log(question)
     const fetchAnswers = async () => {
       try {
         const response = await fetch(
@@ -54,13 +55,14 @@ const QuestionBox = ({ question }) => {
               </div>
             </div>
             <div className="flex gap-x-1 items-center">
-              {relatedTags.map((e, i) => {
+              {relatedTags&&relatedTags.length>0&&relatedTags.map((e, i) => {
+                // console.log(relatedTags)
                 return (
                   <button
-                    className="px-2 bg-green-200 rounded-sm h-min"
+                    className="px-2 bg-purple-700 rounded-sm h-min"
                     key={i}
                   >
-                    {e}
+                   {e?.name || "Unnamed Tag"}
                   </button>
                 );
               })}

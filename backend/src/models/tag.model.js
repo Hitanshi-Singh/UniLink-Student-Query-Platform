@@ -1,19 +1,22 @@
 const mongoose = require("mongoose");
 const { User } = require("./user.model");
-const tagsSchema = new mongoose.Schema({
-  description: {
-    type: String,
+const tagsSchema = new mongoose.Schema(
+  {
+    description: {
+      type: String,
+    },
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: User,
+    },
   },
-  name: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  createdBy:{
-    type: mongoose.Schema.Types.ObjectId,
-    ref:User
-  }
-}, {timestamps: true});
+  { timestamps: true },
+);
 /*  
   // For Computer Science
 const csTags = new Tag({
@@ -78,5 +81,5 @@ const busTags = new Tag({
 });
 await busTags.save();
 */
-const Tag = mongoose.model('Tag', tagsSchema);
-module.exports = Tag;
+const Tag = mongoose.model("Tag", tagsSchema);
+module.exports = { Tag };

@@ -1,41 +1,48 @@
-
 /* eslint-disable react/prop-types */
 
 import { ThumbsDown, ThumbsUp } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const AnswerBox = ({ data }) => {
   const [vote, setVote] = useState("none");
-  // if (data.length == 0) return;
-  const { answer_content, answeredBy, createdAt, _id } = data;
+  const [replybox, setReplybox] = useState(false);
+  const [reply, setReply] = useState("");
+
+  const { answer_content, answeredBy, createdAt, _id, upvotes } = data;
+  const [upvote, setUpvote] = useState(upvotes);
   const token = localStorage.getItem("token");
-  useEffect(() => {
-    const getAnswerData = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:3000/api/answers/${_id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
-            },
-          }
-        );
-        console.error()
-        const data = await response.json();
-        console.log(data);
-        console.log("I am in try block");
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getAnswerData()
-  });
   if (!token) {
     console.log("You need to login bro");
     return;
   }
+
+  const postReply = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/reply/reply`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          content: reply,
+          answerId: _id,
+        }),
+      });
+  
+      if (!response.ok) {
+        // Handle HTTP errors
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log(data); // Log the response data
+      console.log("I am in the try block");
+    } catch (err) {
+      console.error("Error posting reply:", err);
+    }
+  };
+  
 
   const updateUpvotes = async () => {
     try {
@@ -45,7 +52,7 @@ const AnswerBox = ({ data }) => {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -77,34 +84,70 @@ const AnswerBox = ({ data }) => {
           </div>
         </div>
         <div className="px-3">{answer_content}</div>
-        <div className="flex gap-3 m-3">
-          <ThumbsUp
-            strokeWidth={0.75}
-            className="cursor-pointer"
-            fill={vote == "up" ? "white" : ""}
-            onClick={() =>
-              setVote((e) => {
-                updateUpvotes()
-                if (e == "up") return "none";
-                else {
-                  return "up";
+        <div className="flex justify-between items-center">
+          <div className="flex gap-3 m-3">
+            <ThumbsUp
+              strokeWidth={0.75}
+              className="cursor-pointer"
+              fill={vote == "up" ? "white" : ""}
+              onClick={() => {
+                updateUpvotes();
+                setUpvote((prev) => prev + 1);
+
+                return setVote((e) => {
+                  if (e == "up") return "none";
+                  else {
+                    return "up";
+                  }
+                });
+              }}
+            />
+            {upvote}
+            <ThumbsDown
+              strokeWidth={0.75}
+              className="cursor-pointer"
+              fill={vote == "down" ? "white" : ""}
+              onClick={() =>
+                setVote((e) => {
+                  if (e == "down") return "none";
+                  else {
+                    return "down";
+                  }
+                })
+              }
+            />
+          </div>
+          {replybox ? (
+            <div className="flex">
+              <button
+                className="flex justify-center items-center px-3 h-8 border border-red-600 rounded-full "
+                onClick={() => setReplybox(false)}
+              >
+                x
+              </button>
+              <input
+                type="text"
+                placeholder="enter reply"
+                value={reply}
+                onChange={(e) => setReply(e.target.value)
+                  
                 }
-              })
-            }
-          />
-          <ThumbsDown
-            strokeWidth={0.75}
-            className="cursor-pointer"
-            fill={vote == "down" ? "white" : ""}
-            onClick={() =>
-              setVote((e) => {
-                if (e == "down") return "none";
-                else {
-                  return "down";
-                }
-              })
-            }
-          />
+                className="bg-black p-2 mx-3"
+              />
+              <button className="px-2 py-2 h-10" onClick={postReply}>
+                Submit reply
+              </button>
+            </div>
+          ) : (
+            <div>
+              <button
+                className="px-3 h-8 border-none "
+                onClick={() => setReplybox(true)}
+              >
+                Add replies
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>

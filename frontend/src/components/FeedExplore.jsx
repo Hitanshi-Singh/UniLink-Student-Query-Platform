@@ -20,6 +20,7 @@ const FeedExplore = () => {
           },
         });
         const data=await res.json();
+        
       setQuestionsArray(data.data);
       // console.log(data.data);
       }
@@ -32,7 +33,7 @@ const FeedExplore = () => {
   },[]);
   
   return (
-    <div className="w-full  h-screen p-3 flex flex-col overflow-y-scroll gap-y-3">
+    <div className="w-full  h-screen p-3 flex flex-col overflow-y-scroll gap-y-3 ">
       {
         questionsArray.map((ques,index)=>{
           return <QuestionBox question={ques} key={index}/>

@@ -2,8 +2,7 @@ import "./signup.css";
 
 import logo from "../../assets/profilepic.png";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 // import { response } from "../../../../backend/src/app";
 
 const Signup = () => {
@@ -12,7 +11,20 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [subsTags, setSubsTags] = useState("");
+  const [dept, setDept] = useState("");
+  const navigate = useNavigate();
+  const handleNext = () => {
+    const userData = {
+      profilePic,
+      fullName,
+      email,
+      username,
+      password,
+      dept,
+    };
+    localStorage.setItem("userData", JSON.stringify(userData));
+    navigate("/tags");
+  };
 
   const handleProfileClick = () => {
     document.getElementById("fileInput").click();
@@ -94,34 +106,19 @@ const Signup = () => {
             />
           </div>
           <div className="inputdiv">
-            <h5 className="h5">Subscribed Tags</h5>
+            <h5 className="h5">Department</h5>
             <input
               className="input"
               type="text"
-              placeholder="tags"
+              placeholder="Enter you department"
               onChange={(e) => {
-                setSubsTags(e.target.value);
+                setDept(e.target.value);
               }}
             />
           </div>
         </div>
         <div className="click-button">
-          <button
-            className="button"
-            onClick={async () => {
-               const response = await axios.post(
-                "http://localhost:3000/api/users/register",
-                {
-                  fullName,
-                  email,
-                  username,
-                  password,
-                  subscribedTags: subsTags,
-                }
-              );
-              console.log(response?.data?.message);
-            }}
-          >
+          <button className="button" onClick={handleNext}>
             Sign up
           </button>
           <div className="alternate-sign-in">

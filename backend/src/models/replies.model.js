@@ -1,5 +1,6 @@
-import { Schema } from "mongoose";
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
+const { Schema } = mongoose; // Destructure `Schema` from mongoose
+
 
 const replySchema= new Schema(
    {
@@ -18,4 +19,5 @@ const replySchema= new Schema(
    },{timestamps:true} 
 )
 
-export const Reply = mongoose.model("Reply", replySchema);
+const Reply = mongoose.model("Reply", replySchema);
+module.exports = Reply;

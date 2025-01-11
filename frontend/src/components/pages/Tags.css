@@ -1,9 +1,10 @@
 .container {
   text-align: center;
-  margin: 20px;
+  margin: 50px 160px ;
+  color: white;
 }
 
-h1 {
+.h1 {
   text-align: center;
 }
 
@@ -81,10 +82,13 @@ h1 {
 .next-button {
     width: 20%;
     align-items: center;
-  color: #0d1117;
+  color: white;
+  background-color:gray
 }
 
 .next-button:disabled {
     background-color: #063403; /* Gray out the button when disabled */
     cursor: not-allowed; /* Change cursor to indicate disabled state */
+    color: #0d1117;
+
   }
