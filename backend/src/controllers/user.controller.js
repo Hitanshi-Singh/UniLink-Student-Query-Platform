@@ -95,6 +95,7 @@ const registerUser = asyncHandler(async (req, res) => {
       // Tag doesn't exist, create it and associate the `createdBy` field
       tag = await Tag.create({
         name: tagName,
+        description: tagDescription,
         createdBy: user._id, // Associate the tag with the currently registering user
       });
     }

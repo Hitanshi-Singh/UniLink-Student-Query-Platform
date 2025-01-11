@@ -1,8 +1,6 @@
-const mongoose = require("mongoose");
-const { Schema } = mongoose; // Destructure `Schema` from mongoose
-
-
-const replySchema= new Schema(
+const mongoose =require("mongoose");
+const {Schema}= mongoose;
+const replySchema= new mongoose.Schema(
    {
     content: {
         type: String,
@@ -19,5 +17,4 @@ const replySchema= new Schema(
    },{timestamps:true} 
 )
 
-const Reply = mongoose.model("Reply", replySchema);
-module.exports = Reply;
+module.exports = mongoose.model("Reply", replySchema);
