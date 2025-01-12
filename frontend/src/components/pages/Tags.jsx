@@ -3,8 +3,9 @@ import plus from "../../assets/whiteplus.png";
 import tick from "../../assets/tick.png";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-//shd take tags from database
+// Topic list
 const topicsList = [
   "System Design",
   "App Development",
@@ -27,15 +28,16 @@ const topicsList = [
   "Game Development",
 ];
 
-const App = () => {
+const Tags = () => {
   const [selectedTopics, setSelectedTopics] = useState([]);
-  //userData state variables
   const [profilePic, setProfilePic] = useState(null);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [dept, setDept] = useState("");
+  const navigate=useNavigate()
+
   useEffect(() => {
     const savedData = localStorage.getItem("userData");
     if (savedData) {
@@ -48,27 +50,43 @@ const App = () => {
       setDept(parsedData.dept);
     }
   }, []);
+
   const submitUserData = async () => {
-    const response = await axios.post(
-      "http://localhost:3000/api/users/register",
-      {
-        fullName,
-        email,
-        username,
-        password,
-        dept,
-        subscribedTags: selectedTopics,
-      }
-    );
-    console.log(response?.data?.message);
+    console.log(selectedTopics);
+    try {
+      const deptObj = {
+        dept_name: dept,
+        dept_head: "Srinath Sir",
+        dept_email: "jss@univ.com",
+        total_students: 4,
+      };
+      const response = await axios.post(
+        "http://localhost:3000/api/users/register",
+        {
+          fullName,
+          email,
+          username,
+          password,
+          dept: deptObj,
+          subscribedTags: selectedTopics,
+        }
+      );
+      console.log(response)
+      console.log(response?.data?.message);
+      navigate('/login')
+    } catch (error) {
+      console.error(
+        "Error submitting user data:",
+        error?.response?.data || error.message
+      );
+    }
   };
 
   const toggleTopic = (topic) => {
+    console.log(selectedTopics);
     if (selectedTopics.includes(topic)) {
-      // Deselect topic
       setSelectedTopics(selectedTopics.filter((item) => item !== topic));
     } else if (selectedTopics.length < 10) {
-      // Select topic
       setSelectedTopics([...selectedTopics, topic]);
     }
   };
@@ -76,9 +94,7 @@ const App = () => {
   const isSelected = (topic) => selectedTopics.includes(topic);
 
   return (
-    <div className="container ">
-      {/* <icon className="icon"></icon>
-       */}
+    <div className="container">
       <h1 className="h1">Choose your Interests →</h1>
       <p>Select topics that interest you to personalize your feed</p>
       <p>Select up to 10 topics</p>
@@ -114,7 +130,7 @@ const App = () => {
         <button
           className="next-button"
           disabled={selectedTopics.length === 0}
-          onClick={() => submitUserData}
+          onClick={submitUserData}
         >
           Next
         </button>
@@ -123,4 +139,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Tags;

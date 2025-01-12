@@ -63,7 +63,7 @@ const AddQuestionBox = ({ closeAnswer }) => {
         type="text"
         name="Answer"
         id=""
-        placeholder="Enter your answer"
+        placeholder="Enter your Question"
         className="p-2 bg-black m-5 border border-gray-600 rounded-lg w-full"
         value={answer}
         onChange={(e) => {

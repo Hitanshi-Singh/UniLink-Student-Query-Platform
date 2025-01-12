@@ -7,7 +7,7 @@ const Sidebar = () => {
     <>
       <div className="w-96 h-screen  text-white p-3 py-10 flex flex-col  items-center">
         <img src="" alt="" className="w-24 h-24 bg-cyan-300 rounded-full" />
-        <h3>John Cooper</h3>
+        <h3>Hitanshi Singh</h3>
         <Link to={""}>Edit profile</Link>
         <div className="w-full border border-gray-100 rounded-md p-2 my-4">
           <div className="flex justify-between w-full p-2">

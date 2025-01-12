@@ -25,101 +25,97 @@ const generateAccessAndRefereshTokens = async (userId) => {
     );
   }
 };
-
 const registerUser = asyncHandler(async (req, res) => {
-  // get user details from frontend
-  // validation - not empty
-  // check if user already exists: username, email
-  // check for images
-  // upload them to cloudinary
-  // create user object - create entry in db
-  // remove password and refresh token field from response
-  // check for user creation
-  // return res
-
-  const { fullName, email, username, password, dept, selectedTags } = req.body;
-
-  // Validate fields
-  if (
-    [fullName, email, username, password].some((field) => field?.trim() === "")
-  ) {
-    throw new ApiError(400, "All fields are required");
-  }
-
-  // Check if user already exists
-  const existedUser = await User.findOne({
-    $or: [{ username }, { email }],
-  });
-
-  if (existedUser) {
-    throw new ApiError(409, "User with email or username already exists");
-  }
-  const department = await Dept.findById({ dept_name: dept });
-  if (!department) {
-    department = await Dept.create(dept);
-    await department.save();
-  }
-
-  const defaultProfileImageUrl =
-    "https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg";
-  const profileLocalPath =
-    (req?.files?.profileImage && req.files.profileImage[0]?.path) || null;
-
-  let profileImgUrl = defaultProfileImageUrl;
-
-  if (profileLocalPath) {
-    const profileImg = await uploadOnCloudinary(profileLocalPath);
-
-    if (!profileImg) {
-      throw new ApiError(400, "Profile picture upload failed");
+    const { fullName, email, username, password, dept, subscribedTags } = req.body;
+  
+    // Validate fields
+    if (
+      [fullName, email, username, password].some((field) => field?.trim() === "")
+    ) {
+      throw new ApiError(400, "All fields are required");
     }
-
-    profileImgUrl = profileImg.url;
-  }
-
-  const user = await User.create({
-    fullName,
-    profileImage: profileImgUrl,
-    email,
-    password,
-    username: username.toLowerCase(),
-    dept: department?._id,
-    subscribedTags: [],
-  });
-  // Process and associate tags
-  const tagIds = [];
-  for (const tagName of selectedTags) {
-    let tag = await Tag.findOne({ name: tagName });
-
-    if (!tag) {
-      // Tag doesn't exist, create it and associate the `createdBy` field
-      tag = await Tag.create({
-        name: tagName,
-        createdBy: user._id, // Associate the tag with the currently registering user
-      });
+  
+    // Check if user already exists
+    const existedUser = await User.findOne({
+      $or: [{ username }, { email }],
+    });
+  
+    if (existedUser) {
+      throw new ApiError(409, "User with email or username already exists");
     }
-
-    tagIds.push(tag._id); // Collect tag IDs to associate with the user
-  }
-
-  // Update the user's subscribed tags
-  user.subscribedTags = tagIds;
-  await user.save();
-  const createdUser = await User.findById(user._id).select(
-    "-password -refreshToken",
-  );
-
-  if (!createdUser) {
-    throw new ApiError(500, "Something went wrong while registering the user");
-  }
-
-  // Send response with created user and total upvotes
-  return res
-    .status(201)
-    .json(
-      new ApiResponse(200, { createdUser }, "User registered successfully"),
+  
+    // Check if department exists or create a new one
+    let department = await Dept.findOne({ dept_name: dept.dept_name });
+    if (!department) {
+      department = await Dept.create(dept);
+    }
+  
+    // Set default profile image
+    const defaultProfileImageUrl =
+      "https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg";
+    const profileLocalPath =
+      (req?.files?.profileImage && req.files.profileImage[0]?.path) || null;
+  
+    let profileImgUrl = defaultProfileImageUrl;
+  
+    if (profileLocalPath) {
+      const profileImg = await uploadOnCloudinary(profileLocalPath);
+  
+      if (!profileImg) {
+        throw new ApiError(400, "Profile picture upload failed");
+      }
+  
+      profileImgUrl = profileImg.url;
+    }
+  
+    // Create the user
+    const user = await User.create({
+      fullName,
+      profileImage: profileImgUrl,
+      email,
+      password,
+      username: username.toLowerCase(),
+      dept: department._id, // Use the department's ObjectId
+      subscribedTags: [],
+    });
+  
+    // Process and associate tags
+    const tagIds = [];
+    for (const tagName of subscribedTags) {
+      let tag = await Tag.findOne({ name: tagName });
+  
+      if (!tag) {
+        // Tag doesn't exist, create it and associate the `createdBy` field
+        tag = await Tag.create({
+          name: tagName,
+          createdBy: user._id, // Associate the tag with the currently registering user
+        });
+      }
+  
+      tagIds.push(tag._id); // Collect tag IDs to associate with the user
+    }
+  
+    // Update the user's subscribed tags
+    user.subscribedTags = tagIds;
+    await user.save();
+  
+    // Fetch the created user without sensitive fields
+    const createdUser = await User.findById(user._id).select(
+      "-password -refreshToken",
     );
-});
+  
+    if (!createdUser) {
+      throw new ApiError(500, "Something went wrong while registering the user");
+    }
+  
+    // Send response with created user
+    return res
+      .status(201)
+      .json(
+        new ApiResponse(200, { createdUser }, "User registered successfully"),
+      );
+  });
+  
 
 const loginUser = asyncHandler(async (req, res) => {
   const { username, password, email } = req.body;

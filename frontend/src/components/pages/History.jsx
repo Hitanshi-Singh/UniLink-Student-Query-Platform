@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../Sidebar";
+import QuestionBox from "../QuestionBox";
 
 const History = () => {
+  const [questionsData, setQuestionsData] = useState([]);
   useEffect(() => {
     const fetchHistory = async () => {
       const token = localStorage.getItem("token");
@@ -22,16 +24,25 @@ const History = () => {
         );
         const data = await response.json();
         console.log(data);
+        setQuestionsData(data.data);
       } catch (err) {
         console.log(err);
       }
     };
     fetchHistory();
-  });
+  }, []);
   return (
     <>
-      <Sidebar />
-      <div></div>
+      <div className="flex w-full">
+        <Sidebar />
+        <div className="overflow-y-scroll w-full">
+          {questionsData &&
+            questionsData.length > 0 &&
+            questionsData.map((e, i) => {
+              return <QuestionBox key={i} question={e} />;
+            })}
+        </div>
+      </div>
     </>
   );
 };
